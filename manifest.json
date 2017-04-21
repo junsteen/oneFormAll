@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+  "name": "RCR",
+  "description": "React, Chrome, and Redux example",
+  "version": "0.0.0.1",
+  "background": {
+    "scripts": [
+      "event.js"
+    ],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_title": "RCR Example",
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "css": ["style.css","bootstrap.min.css"],
+      "js": ["content.js","jquery-2.1.4.min.js","jquery-ui.min.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": ["/icons/form_view.png", "/icons/form_view_succes.png"],
+  "permissions": ["tabs","storage",
+        "https://yattaru.net/"]
+}
