@@ -16,16 +16,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('click', () => {
-      this.props.dispatch({
-        type: 'ADD_COUNT'
-      });
-    });
+
   }
   render() {
     var ListNodes;
     if(this.state.toggle=="open"){
-      ListNodes =<List storeforms={this.state.storeforms} formnames={this.state.formnames} formgroupsUniqe={this.state.formgroupsUniqe} inputname={this.props.inputname}/>
+      ListNodes =<List dispatch={this.props.dispatch} storeforms={this.state.storeforms} formnames={this.state.formnames} formgroupsUniqe={this.state.formgroupsUniqe} inputname={this.props.inputname}/>
     }else if(this.state.toggle=="close"){
     ListNodes =<div></div>
     }else{

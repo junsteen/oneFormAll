@@ -127,7 +127,9 @@ function returnmsg(name, callback) {
 /////////////////////////////////////////////////////*/
 function runtagApp(mode) {
   if(!tagappinit){
-  render(<App2/>, document.getElementById('getlist'));
+  render(<Provider store={proxyStore}>
+    <App2 />
+  </Provider>,document.getElementById('getlist'));
   setDlagTagAreaApp();
   tagappinit=true;
 

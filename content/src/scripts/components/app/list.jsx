@@ -23,11 +23,11 @@ export default class List extends Component {
     if(this.state.toggle=="personal"){
       tagheadNodes.push(<label className="btn btn-primary active"><input type="radio" autoComplete="off" />個人</label>);
       tagheadNodes.push(<label className="btn btn-primary" onClick={this.changetoggle.bind(this)}><input type="radio" autoComplete="off" />会社</label>);
-      tagbodyNodes.push(<div><Viewitem tags={this.props.formgroupsUniqe.personal} inputname={this.props.inputname} storeforms={this.props.storeforms} formnames={this.props.formnames} /></div>);
+      tagbodyNodes.push(<div><Viewitem tags={this.props.formgroupsUniqe.personal} inputname={this.props.inputname} storeforms={this.props.storeforms} dispatch={this.props.dispatch} formnames={this.props.formnames} /></div>);
     }else{
       tagheadNodes.push(<label className="btn btn-primary" onClick={this.changetoggle.bind(this)}><input type="radio" autoComplete="off" />個人</label>);
       tagheadNodes.push(<label className="btn btn-primary active"><input type="radio" autoComplete="off" />会社</label>);
-      tagbodyNodes.push(<div><Viewitem tags={this.props.formgroupsUniqe.office} inputname={this.props.inputname} storeforms={this.props.storeforms} formnames={this.props.formnames} /></div>);
+      tagbodyNodes.push(<div><Viewitem tags={this.props.formgroupsUniqe.office} inputname={this.props.inputname} storeforms={this.props.storeforms} dispatch={this.props.dispatch} formnames={this.props.formnames} /></div>);
     }
 
 /*

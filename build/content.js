@@ -189,7 +189,11 @@
 	/////////////////////////////////////////////////////*/
 	function runtagApp(mode) {
 	  if (!tagappinit) {
-	    (0, _reactDom.render)(_react2.default.createElement(_App4.default, null), document.getElementById('getlist'));
+	    (0, _reactDom.render)(_react2.default.createElement(
+	      _reactRedux.Provider,
+	      { store: proxyStore },
+	      _react2.default.createElement(_App4.default, null)
+	    ), document.getElementById('getlist'));
 	    setDlagTagAreaApp();
 	    tagappinit = true;
 
@@ -34547,21 +34551,13 @@
 
 	  _createClass(App, [{
 	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var _this2 = this;
-
-	      document.addEventListener('click', function () {
-	        _this2.props.dispatch({
-	          type: 'ADD_COUNT'
-	        });
-	      });
-	    }
+	    value: function componentDidMount() {}
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var ListNodes;
 	      if (this.state.toggle == "open") {
-	        ListNodes = _react2.default.createElement(_list2.default, { storeforms: this.state.storeforms, formnames: this.state.formnames, formgroupsUniqe: this.state.formgroupsUniqe, inputname: this.props.inputname });
+	        ListNodes = _react2.default.createElement(_list2.default, { dispatch: this.props.dispatch, storeforms: this.state.storeforms, formnames: this.state.formnames, formgroupsUniqe: this.state.formgroupsUniqe, inputname: this.props.inputname });
 	      } else if (this.state.toggle == "close") {
 	        ListNodes = _react2.default.createElement('div', null);
 	      } else {
@@ -34699,7 +34695,7 @@
 	        tagbodyNodes.push(_react2.default.createElement(
 	          'div',
 	          null,
-	          _react2.default.createElement(_viewitem2.default, { tags: this.props.formgroupsUniqe.personal, inputname: this.props.inputname, storeforms: this.props.storeforms, formnames: this.props.formnames })
+	          _react2.default.createElement(_viewitem2.default, { tags: this.props.formgroupsUniqe.personal, inputname: this.props.inputname, storeforms: this.props.storeforms, dispatch: this.props.dispatch, formnames: this.props.formnames })
 	        ));
 	      } else {
 	        tagheadNodes.push(_react2.default.createElement(
@@ -34717,7 +34713,7 @@
 	        tagbodyNodes.push(_react2.default.createElement(
 	          'div',
 	          null,
-	          _react2.default.createElement(_viewitem2.default, { tags: this.props.formgroupsUniqe.office, inputname: this.props.inputname, storeforms: this.props.storeforms, formnames: this.props.formnames })
+	          _react2.default.createElement(_viewitem2.default, { tags: this.props.formgroupsUniqe.office, inputname: this.props.inputname, storeforms: this.props.storeforms, dispatch: this.props.dispatch, formnames: this.props.formnames })
 	        ));
 	      }
 
@@ -34797,45 +34793,129 @@
 	    var _this = _possibleConstructorReturn(this, (Viewitem.__proto__ || Object.getPrototypeOf(Viewitem)).call(this, props));
 
 	    _this.state = {
-	      actives: [],
-	      tags: []
+	      actives: []
 	    };
-	    console.log(_this.props.storeforms);
+
 	    return _this;
 	  }
 
 	  _createClass(Viewitem, [{
+	    key: 'changestate',
+	    value: function changestate(nextProps) {
+
+	      //console.log("changestate");
+	      var selectdata = {};
+	      var activesdata = {};
+
+	      for (var key in this.props.formnames) {
+	        if (this.props.formnames[key]["inputName"] != "") {
+	          if (this.props.inputname == this.props.formnames[key]["inputName"]) {
+	            selectdata[this.props.formnames[key]["tagOrder"]] = this.props.storeforms[this.props.formnames[key]["tag"]];
+	            activesdata[this.props.formnames[key]["tagOrder"]] = this.props.formnames[key]["tag"];
+	          }
+	        }
+	      }
+	      console.log("selectdata");
+	      console.log(selectdata);
+	      var addtext = "";
+	      var actives = this.state.actives;
+	      for (var key in activesdata) {
+	        actives.splice(Number(key) - 1, 1, activesdata[key]);
+	        addtext += selectdata[key];
+	      }
+	      console.log("actives");
+	      console.log(actives);
+	      if (actives.length > 0) {
+
+	        $('input[name="' + this.props.inputname + '"]').addClass("addtext");
+	      }
+	      $('input[name="' + this.props.inputname + '"]').val(addtext);
+	      return actives;
+	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var actives = this.changestate();
+	      this.setState({ "actives": actives });
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      /*
+	      console.log("更新されたよcomponentWillReceiveProps");
+	      console.log(nextProps.formnames);
+	      console.log("↑nextProps");
+	      console.log(this.props.formnames);
+	      console.log("↑this.props");
+	      */
+	      $('input[name="' + this.props.inputname + '"]').removeClass("addtext");
+	      $('input[name="' + this.props.inputname + '"]').val();
+	      var actives = this.changestate(nextProps);
+	      this.setState({ "actives": actives });
+	    }
+	  }, {
 	    key: 'changetoggle',
 	    value: function changetoggle(e) {
+	      /*
+	      オーダー情報をフォーム配列に追加、次の描画に備える。
+	      */
+	      //console.log("this.props.formnames");
+	      //console.log(this.props.formnames);
 	      //console.log($(e.target).text());
-	      console.log("e.target.value");
-	      console.log(this._reactInternalInstance._rootNodeID);
-	      console.log(e.target.value);
-	      if (e.target.value) {
-	        var actives = this.state.actives;
-	        var index = actives.indexOf(e.target.value);
-	        if (index != -1) {
-	          console.log("index");
-	          actives.splice(index, 1);
-	        } else {
-	          console.log("noindex");
-	          actives.push(e.target.value);
-	        }
-	        this.setState({ "actives": actives });
-	      }
-	      console.log("this.state.actives");
-	      console.log(this.state.actives);
-	      console.log(this.props.inputname);
+	      //  console.log("e.target.value");
+	      //console.log(this._reactInternalInstance._rootNodeID);
+	      //console.log(e.target.value);
 
-	      var addtext = "";
+	      /*
+	      オーダー専用配列：配列になければ追加。あれば削除。
+	      */
+
+	      var actives = this.state.actives;
+	      var index = actives.indexOf(e.target.value);
+	      if (index != -1) {
+	        console.log("index");
+	        actives.splice(index, 1);
+	      } else {
+	        console.log("noindex");
+	        actives.push(e.target.value);
+	      }
+
+	      //console.log("this.state.actives");
+	      //console.log(this.state.actives);
+	      //console.log(this.props.inputname);
+
+	      //console.log("this.props.formnames");
+	      //console.log(this.props.formnames);
+	      /*
+	      オーダー初期化：押されたものをとにかく一旦削除
+	      */
+	      var newformnames = this.props.formnames;
+	      if (newformnames[e.target.value]["inputName"] != "") {
+	        newformnames[e.target.value]["inputName"] = "";
+	        newformnames[e.target.value]["tagOrder"] = "";
+	      }
+	      /*
+	      オーダー初期化：このフォームに対して使用するタブ名にオーダー情報を順番に追加。
+	      */
 	      for (var key in actives) {
-	        addtext += this.props.storeforms[actives[key]];
+	        newformnames[actives[key]]["inputName"] = this.props.inputname;
+	        newformnames[actives[key]]["tagOrder"] = Number(key) + 1;
+	        console.log("newformnames[actives[key]][tagOrder]");
+	        console.log(Number(key) + 1);
 	      }
 
-	      $('input[name="' + this.props.inputname + '"]').val(addtext);
-	      $('input[name="' + this.props.inputname + '"]').addClass("addtext");
+	      /*
+	      フォーム情報更新：オーダー情報含む
+	      */
+	      //console.log("newformnames");
+	      //console.log(newformnames);
+	      this.props.dispatch({
+	        type: 'ADD_GET_FOMENAMES',
+	        payload: newformnames
+	      });
+	      //console.log('click');
+	      //console.log(this.props.storeforms);
 	      //inputname={this.props.inputname}
-	      return;
 	    }
 	  }, {
 	    key: 'render',
@@ -34844,6 +34924,7 @@
 	      var tags = this.props.tags;
 	      var ViewitemheadNodes = [];
 	      var ViewitembodyNodes = [];
+
 	      for (var key in tags) {
 	        ViewitemheadNodes.push(_react2.default.createElement(
 	          'h3',
@@ -34855,13 +34936,24 @@
 	          )
 	        ));
 	        for (var i in tags[key]) {
-	          if (this.state.actives.indexOf(tags[key][i].tag) != -1) {
-	            ViewitemheadNodes.push(_react2.default.createElement(
-	              'label',
-	              { className: 'btn btn-primary active' },
-	              _react2.default.createElement('input', { type: 'checkbox', onClick: this.changetoggle.bind(this), autoComplete: 'off', value: tags[key][i].tag }),
-	              tags[key][i].tagName
-	            ));
+	          //if(this.state.actives.indexOf(tags[key][i].tag) != -1){
+
+	          if (this.props.formnames[tags[key][i].tag]["inputName"] != "") {
+	            if (this.props.inputname == this.props.formnames[tags[key][i].tag]["inputName"]) {
+	              ViewitemheadNodes.push(_react2.default.createElement(
+	                'label',
+	                { className: 'btn btn-primary active' },
+	                _react2.default.createElement('input', { type: 'checkbox', onClick: this.changetoggle.bind(this), autoComplete: 'off', value: tags[key][i].tag }),
+	                tags[key][i].tagName
+	              ));
+	            } else {
+	              ViewitemheadNodes.push(_react2.default.createElement(
+	                'label',
+	                { className: 'btn btn-info' },
+	                _react2.default.createElement('input', { type: 'checkbox', onClick: this.changetoggle.bind(this), autoComplete: 'off', value: tags[key][i].tag }),
+	                tags[key][i].tagName
+	              ));
+	            }
 	          } else {
 	            ViewitemheadNodes.push(_react2.default.createElement(
 	              'label',
@@ -34872,6 +34964,7 @@
 	          }
 	        }
 	      }
+
 	      return _react2.default.createElement(
 	        'div',
 	        { 'data-toggle': 'buttons' },

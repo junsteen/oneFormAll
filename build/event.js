@@ -59,7 +59,7 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _reactChromeRedux = __webpack_require__(28);
+	var _reactChromeRedux = __webpack_require__(29);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1311,13 +1311,18 @@
 
 	var _storeforms2 = _interopRequireDefault(_storeforms);
 
+	var _getformdata = __webpack_require__(28);
+
+	var _getformdata2 = _interopRequireDefault(_getformdata);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = (0, _redux.combineReducers)({
 	  //count
 	  counter: _count2.default,
 	  formnames: _formnames2.default,
-	  storeforms: _storeforms2.default
+	  storeforms: _storeforms2.default,
+	  getformdata: _getformdata2.default
 	});
 
 /***/ }),
@@ -1329,7 +1334,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var initialState = 0;
+	var initialState = { c: 0 };
 
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -1337,7 +1342,8 @@
 
 	  switch (action.type) {
 	    case 'ADD_COUNT':
-	      return state + (action.payload || 1);
+	      //return state + (action.payload || 1);
+	      return Object.assign({}, state, action.payload);
 	    default:
 	      return state;
 	  }
@@ -1352,10 +1358,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
 	chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	  switch (request.type) {
 	    case "url":
-	      geturl(request.urtext, sendResponse);
+	      geturl(request.text, sendResponse);
 	      return true;
 	      break;
 	    case "addform":
@@ -1365,6 +1372,7 @@
 	    default:
 	      console.log("Error: Unkown request.");
 	      console.log(request);
+	      return true;
 	  }
 	});
 
@@ -1382,66 +1390,72 @@
 	  });
 	}
 
-	var initialState = { "last-name": { "tagName": "姓", "tag": "last-name", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "first-name": { "tagName": "名", "tag": "first-name", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "last-name-katakana": { "tagName": "セイ", "tag": "last-name-katakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "first-name-katakana": { "tagName": "メイ", "tag": "first-name-katakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "last-name-hirakana": { "tagName": "せい", "tag": "last-name-hirakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "first-name-hirakana": { "tagName": "めい", "tag": "first-name-hirakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "last-name-roma": { "tagName": "性:ローマ", "tag": "last-name-roma", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "first-name-roma": { "tagName": "名:ローマ", "tag": "first-name-roma", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "name-space": { "tagName": "空白挿入", "tag": "name-space", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	  "email": { "tagName": "Email", "tag": "email", "tagGroup": "contact-email", "tagGroupName": "メール", "inputName": "", "tagOrder": "" },
-	  "re-email": { "tagName": "Email(再)", "tag": "re-email", "tagGroup": "contact-email", "tagGroupName": "メール", "inputName": "", "tagOrder": "" },
-	  "tel1": { "tagName": "TEL:1", "tag": "tel1", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	  "tel2": { "tagName": "TEL:2", "tag": "tel2", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	  "tel3": { "tagName": "TEL:3", "tag": "tel3", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	  "contact-tel-byte2": { "tagName": "半角→全角", "tag": "contact-tel-byte2", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	  "contact-tel-hyphen": { "tagName": "-　挿入", "tag": "contact-tel-hyphen", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	  "zip1": { "tagName": "〒前", "tag": "zip1", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
-	  "zip2": { "tagName": "〒後", "tag": "zip2", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
-	  "contact-zip-byte2": { "tagName": "半角→全角", "tag": "contact-zip-byte2", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
-	  "contact-zip-hyphen": { "tagName": "-　挿入", "tag": "contact-zip-hyphen", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
-	  "pref": { "tagName": "都道府県", "tag": "pref", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	  "city": { "tagName": "市区町村", "tag": "city", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	  "addr": { "tagName": "詳細", "tag": "addr", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	  "build": { "tagName": "ビル名", "tag": "build", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	  "contact-byte2": { "tagName": "半角→全角", "tag": "contact-byte2", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	  "contact-space": { "tagName": "空白挿入", "tag": "contact-space", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	  "office-name": { "tagName": "社名", "tag": "office-name", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	  "office-div": { "tagName": "部署名", "tag": "office-div", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	  "office-position": { "tagName": "役職名", "tag": "office-position", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	  "office-email": { "tagName": "Email", "tag": "office-email", "tagGroup": "office-email", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	  "re-office-email": { "tagName": "Email(再)", "tag": "re-office-email", "tagGroup": "office-email", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	  "office-tel1": { "tagName": "TEL:1", "tag": "office-tel1", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	  "office-tel2": { "tagName": "TEL:2", "tag": "office-tel2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	  "office-tel3": { "tagName": "TEL:3", "tag": "office-tel3", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	  "office-fax1": { "tagName": "FAX:1", "tag": "office-fax1", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	  "office-fax2": { "tagName": "FAX:2", "tag": "office-fax2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	  "office-fax3": { "tagName": "FAX:3", "tag": "office-fax3", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	  "office-tel-byte2": { "tagName": "半角→全角", "tag": "office-tel-byte2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	  "office-tel-hyphen": { "tagName": "-　挿入", "tag": "office-tel-hyphen", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	  "office-zip1": { "tagName": "〒前", "tag": "office-zip1", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
-	  "office-zip2": { "tagName": "〒後", "tag": "office-zip2", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
-	  "office-zip-byte2": { "tagName": "半角→全角", "tag": "office-zip-byte2", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
-	  "office-zip-hyphen": { "tagName": "-　挿入", "tag": "office-zip-hyphen", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
-	  "office-pref": { "tagName": "都道府県", "tag": "office-pref", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	  "office-city": { "tagName": "市区町村", "tag": "office-city", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	  "office-addr": { "tagName": "詳細", "tag": "office-addr", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	  "office-build": { "tagName": "ビル名", "tag": "office-build", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	  "office-contact-byte2": { "tagName": "半角→全角", "tag": "office-contact-byte2", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	  "office-contact-space": { "tagName": "空白挿入", "tag": "office-contact-space", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" }
-	};;
+	function getform() {
+	  var formnames = { "last-name": { "tagName": "姓", "tag": "last-name", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "first-name": { "tagName": "名", "tag": "first-name", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "last-name-katakana": { "tagName": "セイ", "tag": "last-name-katakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "first-name-katakana": { "tagName": "メイ", "tag": "first-name-katakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "last-name-hirakana": { "tagName": "せい", "tag": "last-name-hirakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "first-name-hirakana": { "tagName": "めい", "tag": "first-name-hirakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "last-name-roma": { "tagName": "性:ローマ", "tag": "last-name-roma", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "first-name-roma": { "tagName": "名:ローマ", "tag": "first-name-roma", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "name-space": { "tagName": "空白挿入", "tag": "name-space", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
+	    "email": { "tagName": "Email", "tag": "email", "tagGroup": "contact-email", "tagGroupName": "メール", "inputName": "", "tagOrder": "" },
+	    "re-email": { "tagName": "Email(再)", "tag": "re-email", "tagGroup": "contact-email", "tagGroupName": "メール", "inputName": "", "tagOrder": "" },
+	    "tel1": { "tagName": "TEL:1", "tag": "tel1", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
+	    "tel2": { "tagName": "TEL:2", "tag": "tel2", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
+	    "tel3": { "tagName": "TEL:3", "tag": "tel3", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
+	    "contact-tel-byte2": { "tagName": "半角→全角", "tag": "contact-tel-byte2", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
+	    "contact-tel-hyphen": { "tagName": "-　挿入", "tag": "contact-tel-hyphen", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
+	    "zip1": { "tagName": "〒前", "tag": "zip1", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
+	    "zip2": { "tagName": "〒後", "tag": "zip2", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
+	    "contact-zip-byte2": { "tagName": "半角→全角", "tag": "contact-zip-byte2", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
+	    "contact-zip-hyphen": { "tagName": "-　挿入", "tag": "contact-zip-hyphen", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
+	    "pref": { "tagName": "都道府県", "tag": "pref", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
+	    "city": { "tagName": "市区町村", "tag": "city", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
+	    "addr": { "tagName": "詳細", "tag": "addr", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
+	    "build": { "tagName": "ビル名", "tag": "build", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
+	    "contact-byte2": { "tagName": "半角→全角", "tag": "contact-byte2", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
+	    "contact-space": { "tagName": "空白挿入", "tag": "contact-space", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
+	    "office-name": { "tagName": "社名", "tag": "office-name", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
+	    "office-div": { "tagName": "部署名", "tag": "office-div", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
+	    "office-position": { "tagName": "役職名", "tag": "office-position", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
+	    "office-email": { "tagName": "Email", "tag": "office-email", "tagGroup": "office-email", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
+	    "re-office-email": { "tagName": "Email(再)", "tag": "re-office-email", "tagGroup": "office-email", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
+	    "office-tel1": { "tagName": "TEL:1", "tag": "office-tel1", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
+	    "office-tel2": { "tagName": "TEL:2", "tag": "office-tel2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
+	    "office-tel3": { "tagName": "TEL:3", "tag": "office-tel3", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
+	    "office-fax1": { "tagName": "FAX:1", "tag": "office-fax1", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
+	    "office-fax2": { "tagName": "FAX:2", "tag": "office-fax2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
+	    "office-fax3": { "tagName": "FAX:3", "tag": "office-fax3", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
+	    "office-tel-byte2": { "tagName": "半角→全角", "tag": "office-tel-byte2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
+	    "office-tel-hyphen": { "tagName": "-　挿入", "tag": "office-tel-hyphen", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
+	    "office-zip1": { "tagName": "〒前", "tag": "office-zip1", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
+	    "office-zip2": { "tagName": "〒後", "tag": "office-zip2", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
+	    "office-zip-byte2": { "tagName": "半角→全角", "tag": "office-zip-byte2", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
+	    "office-zip-hyphen": { "tagName": "-　挿入", "tag": "office-zip-hyphen", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
+	    "office-pref": { "tagName": "都道府県", "tag": "office-pref", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
+	    "office-city": { "tagName": "市区町村", "tag": "office-city", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
+	    "office-addr": { "tagName": "詳細", "tag": "office-addr", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
+	    "office-build": { "tagName": "ビル名", "tag": "office-build", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
+	    "office-contact-byte2": { "tagName": "半角→全角", "tag": "office-contact-byte2", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
+	    "office-contact-space": { "tagName": "空白挿入", "tag": "office-contact-space", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" }
+	  };
+	  console.log("getform!!!!");
+	  return formnames;
+	}
+	var initialState = getform();
 
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case 'GET_FOMENAMES':
-	      return state;
+	    case 'ADD_GET_FOMENAMES':
+	      return Object.assign({}, state, action.payload);
 	    default:
 	      return state;
+
 	  }
 	};
 
@@ -1464,24 +1478,24 @@
 	  "first-name-hirakana": "じゅん",
 	  "last-name-roma": "SUGITA",
 	  "first-name-roma": "JUN",
-	  "name-space": "",
+	  "name-space": " ",
 	  "email": "sole@yattaru.net",
 	  "re-email": "sole@yattaru.net",
 	  "tel1": "090",
 	  "tel2": "1135",
 	  "tel3": "9036",
 	  "contact-tel-byte2": "",
-	  "contact-tel-hyphen": "",
+	  "contact-tel-hyphen": "-",
 	  "zip1": "563",
 	  "zip2": "0024",
 	  "contact-zip-byte2": "",
-	  "contact-zip-hyphen": "",
+	  "contact-zip-hyphen": "-",
 	  "pref": "大阪府",
 	  "city": "池田市鉢塚",
 	  "addr": "2-11-6",
 	  "build": "",
 	  "contact-byte2": "",
-	  "contact-space": "",
+	  "contact-space": " ",
 	  "office-name": "",
 	  "office-div": "",
 	  "office-position": "",
@@ -1494,17 +1508,17 @@
 	  "office-fax2": "",
 	  "office-fax3": "",
 	  "office-tel-byte2": "",
-	  "office-tel-hyphen": "",
+	  "office-tel-hyphen": "-",
 	  "office-zip1": "",
 	  "office-zip2": "",
 	  "office-zip-byte2": "",
-	  "office-zip-hyphen": "",
+	  "office-zip-hyphen": "-",
 	  "office-pref": "",
 	  "office-city": "",
 	  "office-addr": "",
 	  "office-build": "",
 	  "office-contact-byte2": "",
-	  "office-contact-space": ""
+	  "office-contact-space": " "
 	};
 
 	exports.default = function () {
@@ -1512,8 +1526,9 @@
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case 'GET_STOREFOMES':
-	      return state;
+	    case 'ADD_GET_STOREFOMES':
+	      return Object.assign({}, state, action.payload);
+
 	    default:
 	      return state;
 	  }
@@ -1521,6 +1536,32 @@
 
 /***/ }),
 /* 28 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+
+	var initialState = {};
+
+	exports.default = function () {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'SET_GET_FOMEDATA':
+	      return Object.assign({}, state, action.payload);
+
+	    default:
+	      return state;
+	  }
+	};
+
+/***/ }),
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1530,15 +1571,15 @@
 	});
 	exports.alias = exports.wrapStore = exports.Store = undefined;
 
-	var _Store = __webpack_require__(29);
+	var _Store = __webpack_require__(30);
 
 	var _Store2 = _interopRequireDefault(_Store);
 
-	var _wrapStore = __webpack_require__(73);
+	var _wrapStore = __webpack_require__(74);
 
 	var _wrapStore2 = _interopRequireDefault(_wrapStore);
 
-	var _alias = __webpack_require__(74);
+	var _alias = __webpack_require__(75);
 
 	var _alias2 = _interopRequireDefault(_alias);
 
@@ -1549,7 +1590,7 @@
 	exports.alias = _alias2.default;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1560,11 +1601,11 @@
 	  value: true
 	});
 
-	var _assignIn = __webpack_require__(30);
+	var _assignIn = __webpack_require__(31);
 
 	var _assignIn2 = _interopRequireDefault(_assignIn);
 
-	var _constants = __webpack_require__(72);
+	var _constants = __webpack_require__(73);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1647,12 +1688,12 @@
 	exports.default = Store;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(31),
-	    createAssigner = __webpack_require__(44),
-	    keysIn = __webpack_require__(57);
+	var copyObject = __webpack_require__(32),
+	    createAssigner = __webpack_require__(45),
+	    keysIn = __webpack_require__(58);
 
 	/**
 	 * This method is like `_.assign` except that it iterates over own and
@@ -1693,11 +1734,11 @@
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var assignValue = __webpack_require__(32),
-	    baseAssignValue = __webpack_require__(33);
+	var assignValue = __webpack_require__(33),
+	    baseAssignValue = __webpack_require__(34);
 
 	/**
 	 * Copies properties of `source` to `object`.
@@ -1739,11 +1780,11 @@
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(33),
-	    eq = __webpack_require__(43);
+	var baseAssignValue = __webpack_require__(34),
+	    eq = __webpack_require__(44);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1773,10 +1814,10 @@
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var defineProperty = __webpack_require__(34);
+	var defineProperty = __webpack_require__(35);
 
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -1804,10 +1845,10 @@
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(35);
+	var getNative = __webpack_require__(36);
 
 	var defineProperty = (function() {
 	  try {
@@ -1821,11 +1862,11 @@
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(36),
-	    getValue = __webpack_require__(42);
+	var baseIsNative = __webpack_require__(37),
+	    getValue = __webpack_require__(43);
 
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -1844,13 +1885,13 @@
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(37),
-	    isMasked = __webpack_require__(39),
-	    isObject = __webpack_require__(38),
-	    toSource = __webpack_require__(41);
+	var isFunction = __webpack_require__(38),
+	    isMasked = __webpack_require__(40),
+	    isObject = __webpack_require__(39),
+	    toSource = __webpack_require__(42);
 
 	/**
 	 * Used to match `RegExp`
@@ -1897,11 +1938,11 @@
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(6),
-	    isObject = __webpack_require__(38);
+	    isObject = __webpack_require__(39);
 
 	/** `Object#toString` result references. */
 	var asyncTag = '[object AsyncFunction]',
@@ -1940,7 +1981,7 @@
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 	/**
@@ -1977,10 +2018,10 @@
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(40);
+	var coreJsData = __webpack_require__(41);
 
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -2003,7 +2044,7 @@
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var root = __webpack_require__(8);
@@ -2015,7 +2056,7 @@
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -2047,7 +2088,7 @@
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2066,7 +2107,7 @@
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2109,11 +2150,11 @@
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(45),
-	    isIterateeCall = __webpack_require__(53);
+	var baseRest = __webpack_require__(46),
+	    isIterateeCall = __webpack_require__(54);
 
 	/**
 	 * Creates a function like `_.assign`.
@@ -2152,12 +2193,12 @@
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(46),
-	    overRest = __webpack_require__(47),
-	    setToString = __webpack_require__(49);
+	var identity = __webpack_require__(47),
+	    overRest = __webpack_require__(48),
+	    setToString = __webpack_require__(50);
 
 	/**
 	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -2175,7 +2216,7 @@
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2202,10 +2243,10 @@
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(48);
+	var apply = __webpack_require__(49);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -2244,7 +2285,7 @@
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2271,11 +2312,11 @@
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseSetToString = __webpack_require__(50),
-	    shortOut = __webpack_require__(52);
+	var baseSetToString = __webpack_require__(51),
+	    shortOut = __webpack_require__(53);
 
 	/**
 	 * Sets the `toString` method of `func` to return `string`.
@@ -2291,12 +2332,12 @@
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(51),
-	    defineProperty = __webpack_require__(34),
-	    identity = __webpack_require__(46);
+	var constant = __webpack_require__(52),
+	    defineProperty = __webpack_require__(35),
+	    identity = __webpack_require__(47);
 
 	/**
 	 * The base implementation of `setToString` without support for hot loop shorting.
@@ -2319,7 +2360,7 @@
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2351,7 +2392,7 @@
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 	/** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -2394,13 +2435,13 @@
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(43),
-	    isArrayLike = __webpack_require__(54),
-	    isIndex = __webpack_require__(56),
-	    isObject = __webpack_require__(38);
+	var eq = __webpack_require__(44),
+	    isArrayLike = __webpack_require__(55),
+	    isIndex = __webpack_require__(57),
+	    isObject = __webpack_require__(39);
 
 	/**
 	 * Checks if the given arguments are from an iteratee call.
@@ -2430,11 +2471,11 @@
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(37),
-	    isLength = __webpack_require__(55);
+	var isFunction = __webpack_require__(38),
+	    isLength = __webpack_require__(56);
 
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -2469,7 +2510,7 @@
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -2510,7 +2551,7 @@
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -2538,12 +2579,12 @@
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(58),
-	    baseKeysIn = __webpack_require__(69),
-	    isArrayLike = __webpack_require__(54);
+	var arrayLikeKeys = __webpack_require__(59),
+	    baseKeysIn = __webpack_require__(70),
+	    isArrayLike = __webpack_require__(55);
 
 	/**
 	 * Creates an array of the own and inherited enumerable property names of `object`.
@@ -2576,15 +2617,15 @@
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(59),
-	    isArguments = __webpack_require__(60),
-	    isArray = __webpack_require__(62),
-	    isBuffer = __webpack_require__(63),
-	    isIndex = __webpack_require__(56),
-	    isTypedArray = __webpack_require__(65);
+	var baseTimes = __webpack_require__(60),
+	    isArguments = __webpack_require__(61),
+	    isArray = __webpack_require__(63),
+	    isBuffer = __webpack_require__(64),
+	    isIndex = __webpack_require__(57),
+	    isTypedArray = __webpack_require__(66);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -2631,7 +2672,7 @@
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2657,10 +2698,10 @@
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsArguments = __webpack_require__(61),
+	var baseIsArguments = __webpack_require__(62),
 	    isObjectLike = __webpack_require__(14);
 
 	/** Used for built-in method references. */
@@ -2699,7 +2740,7 @@
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(6),
@@ -2723,7 +2764,7 @@
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2755,11 +2796,11 @@
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(8),
-	    stubFalse = __webpack_require__(64);
+	    stubFalse = __webpack_require__(65);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -2800,7 +2841,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2824,12 +2865,12 @@
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(66),
-	    baseUnary = __webpack_require__(67),
-	    nodeUtil = __webpack_require__(68);
+	var baseIsTypedArray = __webpack_require__(67),
+	    baseUnary = __webpack_require__(68),
+	    nodeUtil = __webpack_require__(69);
 
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -2857,11 +2898,11 @@
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(6),
-	    isLength = __webpack_require__(55),
+	    isLength = __webpack_require__(56),
 	    isObjectLike = __webpack_require__(14);
 
 	/** `Object#toString` result references. */
@@ -2923,7 +2964,7 @@
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2943,7 +2984,7 @@
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(9);
@@ -2972,12 +3013,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(38),
-	    isPrototype = __webpack_require__(70),
-	    nativeKeysIn = __webpack_require__(71);
+	var isObject = __webpack_require__(39),
+	    isPrototype = __webpack_require__(71),
+	    nativeKeysIn = __webpack_require__(72);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -3011,7 +3052,7 @@
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -3035,7 +3076,7 @@
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports) {
 
 	/**
@@ -3061,7 +3102,7 @@
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -3073,7 +3114,7 @@
 	var STATE_TYPE = exports.STATE_TYPE = 'chromex.state';
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3082,7 +3123,7 @@
 	  value: true
 	});
 
-	var _constants = __webpack_require__(72);
+	var _constants = __webpack_require__(73);
 
 	/**
 	 * Responder for promisified results
@@ -3152,7 +3193,7 @@
 	};
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports) {
 
 	"use strict";
