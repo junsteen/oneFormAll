@@ -11,6 +11,9 @@ export default class Form extends Component {
           //tabid=response.id;
       }
     );
+    this.props.dispatch({
+       type: 'RESET_FOMENAMES'
+     });
     return ;
   }
   render() {

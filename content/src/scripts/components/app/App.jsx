@@ -18,7 +18,18 @@ class App extends Component {
   componentDidMount() {
 
   }
+  componentWillReceiveProps(nextProps){
+
+    //console.log("タグ挿入アプリcomponentWillReceiveProps開始");
+    //console.log(this.props);
+    //console.log(nextProps);
+
+    this.setState({"formnames":nextProps.formnames});
+    this.setState({"formgroupsUniqe":this.initconverttags(nextProps.formnames)});
+  }
   render() {
+
+    //console.log("タグ挿入アプリrender開始");
     var ListNodes;
     if(this.state.toggle=="open"){
       ListNodes =<List dispatch={this.props.dispatch} storeforms={this.state.storeforms} formnames={this.state.formnames} formgroupsUniqe={this.state.formgroupsUniqe} inputname={this.props.inputname}/>

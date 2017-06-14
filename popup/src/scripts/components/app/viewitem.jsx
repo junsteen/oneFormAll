@@ -40,11 +40,13 @@ export default class Viewitem extends Component {
    }
     console.log("PROPS初期化newformnames");
    console.log(newformnames);
+   console.log("RESETformnames");
    this.props.dispatch({
-      type: 'ADD_GET_FOMENAMES',
+      type: 'RESET_ADD_FOMENAMES',
       payload: newformnames
     });
 
+     console.log(this.props.formnames);
   }
   changetoggle() {
   if(this.state.toggle=="close"){

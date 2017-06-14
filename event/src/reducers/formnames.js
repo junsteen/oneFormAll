@@ -93,6 +93,12 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case 'ADD_GET_FOMENAMES':
     return Object.assign({}, state, action.payload);
+    case 'RESET_ADD_FOMENAMES':
+    var obj=Object.assign({}, initialState);
+    var obj2=Object.assign({}, obj, action.payload);
+      return obj2
+    case 'RESET_FOMENAMES':
+    return Object.assign({}, initialState);
     default:
       return state;
 

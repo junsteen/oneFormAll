@@ -98,7 +98,7 @@ class App extends Component {
       </div>
       <div className="card-block">
       {ListNodes}
-      <Form />
+      <Form dispatch={this.props.dispatch} />
       </div>
       </div>
     </div>
