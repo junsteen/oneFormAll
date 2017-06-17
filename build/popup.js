@@ -34345,20 +34345,34 @@
 	      //data: ["id":"","url":"","tags":"","createdate":"","updatedate":"","autor_id":"","rating":""]
 	      data: [],
 	      formnames: _this.props.formnames,
+	      getformdata: _this.props.getformdata,
 	      url: url,
 	      toggle: ""
 	    };
 	    return _this;
 	  }
+	  //初期化開始
+
 
 	  _createClass(App, [{
+	    key: 'initdatas',
+	    value: function initdatas(data) {
+	      console.log("data:true");
+	      console.log(data);
+	      this.setState({ toggle: "open" });
+	      //this.setState({data: JSON.parse(data)});
+	      this.initconverttags(data);
+	    }
+	  }, {
 	    key: 'loadFormsFromServer',
 	    value: function loadFormsFromServer() {
 	      var _this2 = this;
 
 	      var apiurl = "https://yattaru.net/wp-json/wp/v2/oneformall/view";
 	      //URLを取得できたら開始
-	      if (url != "") {
+	      console.log("this.props.getformdata.url.url");
+	      console.log(this.props.getformdata.url.url);
+	      if (this.props.getformdata.url.url == "") {
 	        var formdata = { "url": url };
 	        _jquery2.default.ajax({
 	          url: apiurl,
@@ -34369,18 +34383,21 @@
 	            var data = JSON.parse(data);
 	            console.log("JSON.parse(data)");
 	            console.log(data);
-	            url = ""; //実行後URLを空にする
+
 	            if (data) {
-	              console.log("data:true");
-	              _this2.setState({ toggle: "open" });
-	              //this.setState({data: JSON.parse(data)});
-	              _this2.initconverttags(data);
+	              var response = { "url": { "url": url }, "datas": data };
+	              _this2.props.dispatch({
+	                type: 'SET_URL',
+	                payload: response
+	              });
+	              //初期化開始
+	              _this2.initdatas(data);
 	            } else {
 	              console.log("data:false");
 	              _this2.setState({ toggle: "close" });
 	              console.log(data);
 	            }
-
+	            clearInterval(_this2.interval);
 	            //console.log(data);
 	            //"[{"id":"12","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"tel2\",\"inputName\":\"EU_TEL2\",\"tagOrder\":\"1\"},{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"last-name-katakana\",\"inputName\":\"EU_KFNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name-katakana\",\"inputName\":\"EU_KLNAME\",\"tagOrder\":\"1\"},{\"tag\":\"email\",\"inputName\":\"EU_EMAIL\",\"tagOrder\":\"1\"},{\"tag\":\"tel1\",\"inputName\":\"EU_TEL1\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"},{\"tag\":\"tel3\",\"inputName\":\"EU_TEL3\",\"tagOrder\":\"1\"},{\"tag\":\"zip1\",\"inputName\":\"EU_ZIP1\",\"tagOrder\":\"1\"},{\"tag\":\"zip2\",\"inputName\":\"EU_ZIP2\",\"tagOrder\":\"1\"},{\"tag\":\"city\",\"inputName\":\"EU_ADD1\",\"tagOrder\":\"1\"},{\"tag\":\"addr\",\"inputName\":\"EU_ADD2\",\"tagOrder\":\"1\"},{\"tag\":\"build\",\"inputName\":\"EU_ADD3\",\"tagOrder\":\"1\"}]","autor_id":"20","rating":null,"createdate":"2017-04-12 13:14:14","updatedate":"2017-04-12 13:55:21"},{"id":"6","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"}]","autor_id":"10","rating":null,"createdate":"2017-04-11 19:30:11","updatedate":"2017-04-11 22:35:58"}]"
 	          },
@@ -34391,6 +34408,11 @@
 	            url = ""; //実行後URLを空にする
 	          }
 	        });
+	      } else {
+	        console.log("読み込み済み");
+	        clearInterval(this.interval);
+	        //初期化開始
+	        this.initdatas(this.props.getformdata.datas);
 	      }
 	    }
 	  }, {
@@ -34403,6 +34425,7 @@
 	          type: "url",
 	          text: "Taka"
 	        }, function (response) {
+	          console.log("response");
 	          console.log(response);
 	          url = response.url;
 	          //tabid=response.id;
@@ -34410,11 +34433,12 @@
 	      }
 
 	      //URLを取得できるまで繰り返し実行。実行後URLを殻にする
-	      setInterval(this.loadFormsFromServer.bind(this), 2000);
+	      this.interval = setInterval(this.loadFormsFromServer.bind(this), 2000);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+
 	      var ListNodes;
 	      if (this.state.toggle == "open") {
 	        ListNodes = _react2.default.createElement(_list2.default, { data: this.state.data, formnames: this.props.formnames, dispatch: this.props.dispatch });
@@ -34778,7 +34802,7 @@
 /* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -34808,8 +34832,12 @@
 	  }
 
 	  _createClass(Form, [{
-	    key: "addform",
+	    key: 'addform',
 	    value: function addform() {
+	      this.props.dispatch({
+	        type: 'CHANGE_MODE',
+	        payload: "selecttime"
+	      });
 	      chrome.runtime.sendMessage({
 	        type: "addform",
 	        text: ""
@@ -34823,15 +34851,15 @@
 	      return;
 	    }
 	  }, {
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
-	        "div",
-	        { className: "card-footer text-muted" },
+	        'div',
+	        { className: 'card-footer text-muted' },
 	        _react2.default.createElement(
-	          "button",
-	          { type: "button", onClick: this.addform.bind(this), className: "btn btn-info" },
-	          "\u65B0\u898F\u8FFD\u52A0"
+	          'button',
+	          { type: 'button', onClick: this.addform.bind(this), className: 'btn btn-info' },
+	          '\u65B0\u898F\u8FFD\u52A0'
 	        )
 	      );
 	    }

@@ -59,7 +59,7 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _reactChromeRedux = __webpack_require__(29);
+	var _reactChromeRedux = __webpack_require__(30);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1315,6 +1315,10 @@
 
 	var _getformdata2 = _interopRequireDefault(_getformdata);
 
+	var _timer = __webpack_require__(29);
+
+	var _timer2 = _interopRequireDefault(_timer);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = (0, _redux.combineReducers)({
@@ -1322,7 +1326,8 @@
 	  counter: _count2.default,
 	  formnames: _formnames2.default,
 	  storeforms: _storeforms2.default,
-	  getformdata: _getformdata2.default
+	  getformdata: _getformdata2.default,
+	  timer: _timer2.default
 	});
 
 /***/ }),
@@ -1476,55 +1481,55 @@
 	});
 
 
-	var initialState = { "last-name": "杉田",
-	  "first-name": "淳",
-	  "last-name-katakana": "スギタ",
-	  "first-name-katakana": "ジュン",
-	  "last-name-hirakana": "すぎた",
-	  "first-name-hirakana": "じゅん",
-	  "last-name-roma": "SUGITA",
-	  "first-name-roma": "JUN",
-	  "name-space": " ",
-	  "email": "sole@yattaru.net",
-	  "re-email": "sole@yattaru.net",
-	  "tel1": "090",
-	  "tel2": "1135",
-	  "tel3": "9036",
-	  "contact-tel-byte2": "",
-	  "contact-tel-hyphen": "-",
-	  "zip1": "563",
-	  "zip2": "0024",
-	  "contact-zip-byte2": "",
-	  "contact-zip-hyphen": "-",
-	  "pref": "大阪府",
-	  "city": "池田市鉢塚",
-	  "addr": "2-11-6",
-	  "build": "",
-	  "contact-byte2": "",
-	  "contact-space": " ",
-	  "office-name": "",
-	  "office-div": "",
-	  "office-position": "",
-	  "office-email": "",
-	  "re-office-email": "",
-	  "office-tel1": "",
-	  "office-tel2": "",
-	  "office-tel3": "",
-	  "office-fax1": "",
-	  "office-fax2": "",
-	  "office-fax3": "",
-	  "office-tel-byte2": "",
-	  "office-tel-hyphen": "-",
-	  "office-zip1": "",
-	  "office-zip2": "",
-	  "office-zip-byte2": "",
-	  "office-zip-hyphen": "-",
-	  "office-pref": "",
-	  "office-city": "",
-	  "office-addr": "",
-	  "office-build": "",
-	  "office-contact-byte2": "",
-	  "office-contact-space": " "
+	var initialState = { "last-name": { "time": "3600", "name": "杉田" },
+	  "first-name": { "time": "3601", "name": "淳" },
+	  "last-name-katakana": { "time": "3602", "name": "スギタ" },
+	  "first-name-katakana": { "time": "3603", "name": "ジュン" },
+	  "last-name-hirakana": { "time": "3604", "name": "すぎた" },
+	  "first-name-hirakana": { "time": "3605", "name": "じゅん" },
+	  "last-name-roma": { "time": "3606", "name": "SUGITA" },
+	  "first-name-roma": { "time": "3607", "name": "JUN" },
+	  "name-space": { "time": "3608", "name": "" },
+	  "email": { "time": "3609", "name": "sole@yattaru.net" },
+	  "re-email": { "time": "3610", "name": "sole@yattaru.net" },
+	  "tel1": { "time": "3611", "name": "090" },
+	  "tel2": { "time": "3612", "name": "1135" },
+	  "tel3": { "time": "3613", "name": "9036" },
+	  "contact-tel-byte2": { "time": "3614", "name": "" },
+	  "contact-tel-hyphen": { "time": "3615", "name": "" },
+	  "zip1": { "time": "3616", "name": "563" },
+	  "zip2": { "time": "3617", "name": "0024" },
+	  "contact-zip-byte2": { "time": "3618", "name": "" },
+	  "contact-zip-hyphen": { "time": "3619", "name": "" },
+	  "pref": { "time": "3620", "name": "大阪府" },
+	  "city": { "time": "3621", "name": "池田市鉢塚" },
+	  "addr": { "time": "3622", "name": "2-11-6" },
+	  "build": { "time": "3623", "name": "" },
+	  "contact-byte2": { "time": "3624", "name": "" },
+	  "contact-space": { "time": "3625", "name": "" },
+	  "office-name": { "time": "3626", "name": "" },
+	  "office-div": { "time": "3627", "name": "" },
+	  "office-position": { "time": "3628", "name": "" },
+	  "office-email": { "time": "3629", "name": "" },
+	  "re-office-email": { "time": "3630", "name": "" },
+	  "office-tel1": { "time": "3631", "name": "" },
+	  "office-tel2": { "time": "3632", "name": "" },
+	  "office-tel3": { "time": "3633", "name": "" },
+	  "office-fax1": { "time": "3634", "name": "" },
+	  "office-fax2": { "time": "3635", "name": "" },
+	  "office-fax3": { "time": "3636", "name": "" },
+	  "office-tel-byte2": { "time": "3637", "name": "" },
+	  "office-tel-hyphen": { "time": "3638", "name": "" },
+	  "office-zip1": { "time": "3639", "name": "" },
+	  "office-zip2": { "time": "3640", "name": "" },
+	  "office-zip-byte2": { "time": "3641", "name": "" },
+	  "office-zip-hyphen": { "time": "3642", "name": "" },
+	  "office-pref": { "time": "3643", "name": "" },
+	  "office-city": { "time": "3644", "name": "" },
+	  "office-addr": { "time": "3645", "name": "" },
+	  "office-build": { "time": "3646", "name": "" },
+	  "office-contact-byte2": { "time": "3647", "name": "" },
+	  "office-contact-space": { "time": "3648", "name": "" }
 	};
 
 	exports.default = function () {
@@ -1544,22 +1549,31 @@
 /* 28 */
 /***/ (function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 
 
-	var initialState = {};
+	var initialState = { "url": { "url": "", "favicon": "" },
+	  "datas": {}
+	};
+
+	function set_url(state, payload) {
+	  //window.alert(payload.url.url);
+	  state.url.url = payload.url.url;
+	  state.datas = payload.datas;
+	  return state;
+	}
 
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case 'SET_GET_FOMEDATA':
-	      return Object.assign({}, state, action.payload);
+	    case 'SET_URL':
+	      return Object.assign({}, state, set_url(state, action.payload));
 
 	    default:
 	      return state;
@@ -1568,6 +1582,148 @@
 
 /***/ }),
 /* 29 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+
+	function getinitialtime() {
+	  var times = { "inputtime": { "tagName": "キー入力時間", "tagModeName": "キー入力中", "tag": "inputtime", "select": false, "starttime": starttime(), "time": "00:00:00", "mtime": "0" },
+	    "selecttime": { "tagName": "タグ選択時間", "tagModeName": "タグ選択中", "tag": "selecttime", "select": false, "starttime": starttime(), "time": "00:00:00", "mtime": "0" },
+	    "confirmtime": { "tagName": "タグ確認時間", "tagModeName": "タグ確認中", "tag": "confirmtime", "select": true, "starttime": starttime(), "time": "00:00:00", "mtime": "0" },
+	    "mytime": { "tagName": "合計節約時間", "tag": "mytime", "time": "00:00:00" }
+	    //,"alltime":{"tagName":"みんなの節約時間","tag":"alltime","time":"00:00:00"}
+
+	  };
+
+	  return times;
+	}
+	function starttime() {
+	  var date_obj = new Date();
+	  var time_start = date_obj.getTime();
+	  return time_start;
+	}
+
+	function get_updatetime(time, starttime, payloads) {
+
+	  //window.alert(starttime);
+	  var date_obj2 = new Date();
+	  var updatetime = parseInt(date_obj2.getTime() - starttime);
+	  time[payloads.mode].time = formattime(updatetime);
+	  time[payloads.mode].mtime = updatetime;
+
+	  var totalmtime = 0;
+
+	  for (var key in payloads.formnames) {
+
+	    if (payloads.formnames[key]["inputName"] != "") {
+	      totalmtime += parseInt(payloads.storeforms[key]["time"]);
+	    }
+	  }
+
+	  time["inputtime"].mtime = totalmtime;
+	  time["inputtime"].time = formattime(totalmtime);
+	  //window.alert(times[mode].time);
+	  var totalmymtime = 0;
+	  totalmymtime = parseInt(time["inputtime"].mtime) + parseInt(time["selecttime"].mtime) + parseInt(time["confirmtime"].mtime);
+
+	  time["mytime"].mtime = totalmymtime;
+	  time["mytime"].time = formattime(totalmymtime);
+
+	  return time;
+	}
+	function formattime(time) {
+	  if (time != 0) {
+	    var hh = parseInt(time / (60 * 60 * 1000));
+	    var mm = parseInt(time / (60 * 1000) % 60);
+	    var ss = time / 1000 % 60;
+	    var ss = Math.floor(ss);
+	    // 数値が1桁の場合、頭に0を付けて2桁で表示する指定
+	    if (hh < 10) {
+	      hh = "0" + hh;
+	    }
+	    if (mm < 10) {
+	      mm = "0" + mm;
+	    }
+	    if (ss < 10) {
+	      ss = "0" + ss;
+	    }
+	    var formattime = hh + ':' + mm + ':' + ss;
+	  } else {
+	    var formattime = "00:00:00";
+	  }
+
+	  return formattime;
+	}
+	function get_updatetime_replay(time, modename) {
+
+	  time[modename].starttime = starttime();
+	  time[modename].starttime = time[modename].starttime - time[modename].mtime;
+
+	  time = get_updatetime(time, time[modename].starttime, modename);
+	  return time;
+	}
+
+	function get_updatemode(time, modename) {
+	  //window.alert(starttime);
+	  for (var key in time) {
+	    time[key].select = false;
+	    time[key].starttime = starttime();
+	  }
+	  time[modename].select = true;
+	  return time;
+	}
+
+	function set_updatetime(time, payload) {
+	  var totalmtime = 0;
+	  for (var key in payload.formnames) {
+	    if (payload.formnames[key]["inputName"] != "") {
+
+	      totalmtime += parseInt(payload.storeforms[key]["time"]);
+	    }
+	  }
+	  //window.alert(totalmtime);
+	  time["inputtime"].mtime = totalmtime;
+	  time["inputtime"].time = formattime(totalmtime);
+
+	  return time;
+	}
+	var initialState = getinitialtime();
+
+	exports.default = function () {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'ADD_GET_TIMES':
+	      //window.alert("ADD_GET_TIMES");
+	      return Object.assign({}, state, get_updatetime(state, state[action.payload.mode].starttime, action.payload));
+
+	    case 'CHANGE_MODE':
+	      //window.alert("ADD_GET_TIMES");
+	      return Object.assign({}, state, get_updatemode(state, action.payload));
+
+	    case 'REPLAY_TIMES':
+	      return Object.assign({}, state, get_updatetime_replay(state, action.payload));
+
+	    case 'RESET_TIMES':
+	      return Object.assign({}, initialState);
+
+	    case 'ADD_INPUT_TIMES':
+	      return Object.assign({}, state, set_updatetime(state, action.payload));
+
+	    default:
+	      return state;
+
+	  }
+	};
+
+/***/ }),
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1577,15 +1733,15 @@
 	});
 	exports.alias = exports.wrapStore = exports.Store = undefined;
 
-	var _Store = __webpack_require__(30);
+	var _Store = __webpack_require__(31);
 
 	var _Store2 = _interopRequireDefault(_Store);
 
-	var _wrapStore = __webpack_require__(74);
+	var _wrapStore = __webpack_require__(75);
 
 	var _wrapStore2 = _interopRequireDefault(_wrapStore);
 
-	var _alias = __webpack_require__(75);
+	var _alias = __webpack_require__(76);
 
 	var _alias2 = _interopRequireDefault(_alias);
 
@@ -1596,7 +1752,7 @@
 	exports.alias = _alias2.default;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1607,11 +1763,11 @@
 	  value: true
 	});
 
-	var _assignIn = __webpack_require__(31);
+	var _assignIn = __webpack_require__(32);
 
 	var _assignIn2 = _interopRequireDefault(_assignIn);
 
-	var _constants = __webpack_require__(73);
+	var _constants = __webpack_require__(74);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1694,12 +1850,12 @@
 	exports.default = Store;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(32),
-	    createAssigner = __webpack_require__(45),
-	    keysIn = __webpack_require__(58);
+	var copyObject = __webpack_require__(33),
+	    createAssigner = __webpack_require__(46),
+	    keysIn = __webpack_require__(59);
 
 	/**
 	 * This method is like `_.assign` except that it iterates over own and
@@ -1740,11 +1896,11 @@
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var assignValue = __webpack_require__(33),
-	    baseAssignValue = __webpack_require__(34);
+	var assignValue = __webpack_require__(34),
+	    baseAssignValue = __webpack_require__(35);
 
 	/**
 	 * Copies properties of `source` to `object`.
@@ -1786,11 +1942,11 @@
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(34),
-	    eq = __webpack_require__(44);
+	var baseAssignValue = __webpack_require__(35),
+	    eq = __webpack_require__(45);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1820,10 +1976,10 @@
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var defineProperty = __webpack_require__(35);
+	var defineProperty = __webpack_require__(36);
 
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -1851,10 +2007,10 @@
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(36);
+	var getNative = __webpack_require__(37);
 
 	var defineProperty = (function() {
 	  try {
@@ -1868,11 +2024,11 @@
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(37),
-	    getValue = __webpack_require__(43);
+	var baseIsNative = __webpack_require__(38),
+	    getValue = __webpack_require__(44);
 
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -1891,13 +2047,13 @@
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(38),
-	    isMasked = __webpack_require__(40),
-	    isObject = __webpack_require__(39),
-	    toSource = __webpack_require__(42);
+	var isFunction = __webpack_require__(39),
+	    isMasked = __webpack_require__(41),
+	    isObject = __webpack_require__(40),
+	    toSource = __webpack_require__(43);
 
 	/**
 	 * Used to match `RegExp`
@@ -1944,11 +2100,11 @@
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(6),
-	    isObject = __webpack_require__(39);
+	    isObject = __webpack_require__(40);
 
 	/** `Object#toString` result references. */
 	var asyncTag = '[object AsyncFunction]',
@@ -1987,7 +2143,7 @@
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2024,10 +2180,10 @@
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(41);
+	var coreJsData = __webpack_require__(42);
 
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -2050,7 +2206,7 @@
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var root = __webpack_require__(8);
@@ -2062,7 +2218,7 @@
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -2094,7 +2250,7 @@
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2113,7 +2269,7 @@
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2156,11 +2312,11 @@
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(46),
-	    isIterateeCall = __webpack_require__(54);
+	var baseRest = __webpack_require__(47),
+	    isIterateeCall = __webpack_require__(55);
 
 	/**
 	 * Creates a function like `_.assign`.
@@ -2199,12 +2355,12 @@
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(47),
-	    overRest = __webpack_require__(48),
-	    setToString = __webpack_require__(50);
+	var identity = __webpack_require__(48),
+	    overRest = __webpack_require__(49),
+	    setToString = __webpack_require__(51);
 
 	/**
 	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -2222,7 +2378,7 @@
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2249,10 +2405,10 @@
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(49);
+	var apply = __webpack_require__(50);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -2291,7 +2447,7 @@
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2318,11 +2474,11 @@
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseSetToString = __webpack_require__(51),
-	    shortOut = __webpack_require__(53);
+	var baseSetToString = __webpack_require__(52),
+	    shortOut = __webpack_require__(54);
 
 	/**
 	 * Sets the `toString` method of `func` to return `string`.
@@ -2338,12 +2494,12 @@
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(52),
-	    defineProperty = __webpack_require__(35),
-	    identity = __webpack_require__(47);
+	var constant = __webpack_require__(53),
+	    defineProperty = __webpack_require__(36),
+	    identity = __webpack_require__(48);
 
 	/**
 	 * The base implementation of `setToString` without support for hot loop shorting.
@@ -2366,7 +2522,7 @@
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2398,7 +2554,7 @@
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports) {
 
 	/** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -2441,13 +2597,13 @@
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(44),
-	    isArrayLike = __webpack_require__(55),
-	    isIndex = __webpack_require__(57),
-	    isObject = __webpack_require__(39);
+	var eq = __webpack_require__(45),
+	    isArrayLike = __webpack_require__(56),
+	    isIndex = __webpack_require__(58),
+	    isObject = __webpack_require__(40);
 
 	/**
 	 * Checks if the given arguments are from an iteratee call.
@@ -2477,11 +2633,11 @@
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(38),
-	    isLength = __webpack_require__(56);
+	var isFunction = __webpack_require__(39),
+	    isLength = __webpack_require__(57);
 
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -2516,7 +2672,7 @@
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -2557,7 +2713,7 @@
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -2585,12 +2741,12 @@
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(59),
-	    baseKeysIn = __webpack_require__(70),
-	    isArrayLike = __webpack_require__(55);
+	var arrayLikeKeys = __webpack_require__(60),
+	    baseKeysIn = __webpack_require__(71),
+	    isArrayLike = __webpack_require__(56);
 
 	/**
 	 * Creates an array of the own and inherited enumerable property names of `object`.
@@ -2623,15 +2779,15 @@
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(60),
-	    isArguments = __webpack_require__(61),
-	    isArray = __webpack_require__(63),
-	    isBuffer = __webpack_require__(64),
-	    isIndex = __webpack_require__(57),
-	    isTypedArray = __webpack_require__(66);
+	var baseTimes = __webpack_require__(61),
+	    isArguments = __webpack_require__(62),
+	    isArray = __webpack_require__(64),
+	    isBuffer = __webpack_require__(65),
+	    isIndex = __webpack_require__(58),
+	    isTypedArray = __webpack_require__(67);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -2678,7 +2834,7 @@
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2704,10 +2860,10 @@
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsArguments = __webpack_require__(62),
+	var baseIsArguments = __webpack_require__(63),
 	    isObjectLike = __webpack_require__(14);
 
 	/** Used for built-in method references. */
@@ -2746,7 +2902,7 @@
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(6),
@@ -2770,7 +2926,7 @@
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2802,11 +2958,11 @@
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(8),
-	    stubFalse = __webpack_require__(65);
+	    stubFalse = __webpack_require__(66);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -2847,7 +3003,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2871,12 +3027,12 @@
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(67),
-	    baseUnary = __webpack_require__(68),
-	    nodeUtil = __webpack_require__(69);
+	var baseIsTypedArray = __webpack_require__(68),
+	    baseUnary = __webpack_require__(69),
+	    nodeUtil = __webpack_require__(70);
 
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -2904,11 +3060,11 @@
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(6),
-	    isLength = __webpack_require__(56),
+	    isLength = __webpack_require__(57),
 	    isObjectLike = __webpack_require__(14);
 
 	/** `Object#toString` result references. */
@@ -2970,7 +3126,7 @@
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports) {
 
 	/**
@@ -2990,7 +3146,7 @@
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(9);
@@ -3019,12 +3175,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(39),
-	    isPrototype = __webpack_require__(71),
-	    nativeKeysIn = __webpack_require__(72);
+	var isObject = __webpack_require__(40),
+	    isPrototype = __webpack_require__(72),
+	    nativeKeysIn = __webpack_require__(73);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -3058,7 +3214,7 @@
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -3082,7 +3238,7 @@
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports) {
 
 	/**
@@ -3108,7 +3264,7 @@
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -3120,7 +3276,7 @@
 	var STATE_TYPE = exports.STATE_TYPE = 'chromex.state';
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3129,7 +3285,7 @@
 	  value: true
 	});
 
-	var _constants = __webpack_require__(73);
+	var _constants = __webpack_require__(74);
 
 	/**
 	 * Responder for promisified results
@@ -3199,7 +3355,7 @@
 	};
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports) {
 
 	"use strict";

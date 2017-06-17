@@ -15,49 +15,68 @@ class App extends Component {
       //data: ["id":"","url":"","tags":"","createdate":"","updatedate":"","autor_id":"","rating":""]
       data:[],
       formnames: this.props.formnames,
+      getformdata: this.props.getformdata,
       url:url,
       toggle: ""
     };
   }
+  //初期化開始
+  initdatas(data) {
+    console.log("data:true");
+    console.log(data);
+    this.setState({toggle: "open"});
+    //this.setState({data: JSON.parse(data)});
+    this.initconverttags(data);
+
+
+  }
   loadFormsFromServer() {
   var apiurl="https://yattaru.net/wp-json/wp/v2/oneformall/view";
 //URLを取得できたら開始
-  if(url!=""){
-    var formdata={"url":url};
-      $.ajax({
-        url: apiurl,
-        dataType: 'json',
-        cache: false,
-        data: formdata,
-        success: (data) => {
-          var data=JSON.parse(data);
-          console.log("JSON.parse(data)");
-          console.log(data);
-          url="";//実行後URLを空にする
-        if(data){
-          console.log("data:true");
-          this.setState({toggle: "open"});
-          //this.setState({data: JSON.parse(data)});
-          this.initconverttags(data);
+console.log("this.props.getformdata.url.url");
+    console.log(this.props.getformdata.url.url);
+        if(this.props.getformdata.url.url==""){
+          var formdata={"url":url};
+              $.ajax({
+                url: apiurl,
+                dataType: 'json',
+                cache: false,
+                data: formdata,
+                success: (data) => {
+                  var data=JSON.parse(data);
+                  console.log("JSON.parse(data)");
+                  console.log(data);
 
+                  if(data){
+                    var response={"url":{"url":url},"datas":data};
+                    this.props.dispatch({
+                      type: 'SET_URL',
+                      payload: response
+                    });
+                    //初期化開始
+                    this.initdatas(data);
+                  }else{
+                    console.log("data:false");
+                    this.setState({toggle: "close"});
+                    console.log(data);
+                  }
+                clearInterval(this.interval);
+                //console.log(data);
+                //"[{"id":"12","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"tel2\",\"inputName\":\"EU_TEL2\",\"tagOrder\":\"1\"},{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"last-name-katakana\",\"inputName\":\"EU_KFNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name-katakana\",\"inputName\":\"EU_KLNAME\",\"tagOrder\":\"1\"},{\"tag\":\"email\",\"inputName\":\"EU_EMAIL\",\"tagOrder\":\"1\"},{\"tag\":\"tel1\",\"inputName\":\"EU_TEL1\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"},{\"tag\":\"tel3\",\"inputName\":\"EU_TEL3\",\"tagOrder\":\"1\"},{\"tag\":\"zip1\",\"inputName\":\"EU_ZIP1\",\"tagOrder\":\"1\"},{\"tag\":\"zip2\",\"inputName\":\"EU_ZIP2\",\"tagOrder\":\"1\"},{\"tag\":\"city\",\"inputName\":\"EU_ADD1\",\"tagOrder\":\"1\"},{\"tag\":\"addr\",\"inputName\":\"EU_ADD2\",\"tagOrder\":\"1\"},{\"tag\":\"build\",\"inputName\":\"EU_ADD3\",\"tagOrder\":\"1\"}]","autor_id":"20","rating":null,"createdate":"2017-04-12 13:14:14","updatedate":"2017-04-12 13:55:21"},{"id":"6","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"}]","autor_id":"10","rating":null,"createdate":"2017-04-11 19:30:11","updatedate":"2017-04-11 22:35:58"}]"
+                 },
+                error: (xhr, status, err) => {
 
-        }else{
-          console.log("data:false");
-          this.setState({toggle: "close"});
-          console.log(data);
-        }
-
-        //console.log(data);
-        //"[{"id":"12","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"tel2\",\"inputName\":\"EU_TEL2\",\"tagOrder\":\"1\"},{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"last-name-katakana\",\"inputName\":\"EU_KFNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name-katakana\",\"inputName\":\"EU_KLNAME\",\"tagOrder\":\"1\"},{\"tag\":\"email\",\"inputName\":\"EU_EMAIL\",\"tagOrder\":\"1\"},{\"tag\":\"tel1\",\"inputName\":\"EU_TEL1\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"},{\"tag\":\"tel3\",\"inputName\":\"EU_TEL3\",\"tagOrder\":\"1\"},{\"tag\":\"zip1\",\"inputName\":\"EU_ZIP1\",\"tagOrder\":\"1\"},{\"tag\":\"zip2\",\"inputName\":\"EU_ZIP2\",\"tagOrder\":\"1\"},{\"tag\":\"city\",\"inputName\":\"EU_ADD1\",\"tagOrder\":\"1\"},{\"tag\":\"addr\",\"inputName\":\"EU_ADD2\",\"tagOrder\":\"1\"},{\"tag\":\"build\",\"inputName\":\"EU_ADD3\",\"tagOrder\":\"1\"}]","autor_id":"20","rating":null,"createdate":"2017-04-12 13:14:14","updatedate":"2017-04-12 13:55:21"},{"id":"6","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"}]","autor_id":"10","rating":null,"createdate":"2017-04-11 19:30:11","updatedate":"2017-04-11 22:35:58"}]"
-         },
-        error: (xhr, status, err) => {
-
-          this.setState({toggle: "err"});
-          console.error(url, status, err.toString());
-          url="";//実行後URLを空にする
-        }
-      });
-      }
+                  this.setState({toggle: "err"});
+                  console.error(url, status, err.toString());
+                  url="";//実行後URLを空にする
+                }
+              });
+            }else{
+              console.log("読み込み済み");
+              clearInterval(this.interval);
+              //初期化開始
+              this.initdatas(this.props.getformdata.datas);
+            }
     }
   componentDidMount() {
 
@@ -68,6 +87,7 @@ class App extends Component {
       text: "Taka"
     },
       function (response) {
+        console.log("response");
         console.log(response);
           url=response.url;
           //tabid=response.id;
@@ -77,9 +97,10 @@ class App extends Component {
   }
 
 //URLを取得できるまで繰り返し実行。実行後URLを殻にする
-    setInterval(this.loadFormsFromServer.bind(this),2000);
+    this.interval=setInterval(this.loadFormsFromServer.bind(this),2000);
   }
   render() {
+
     var ListNodes;
     if(this.state.toggle=="open"){
       ListNodes =<List data={this.state.data} formnames={this.props.formnames} dispatch={this.props.dispatch}  />

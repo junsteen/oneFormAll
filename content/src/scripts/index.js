@@ -5,15 +5,17 @@ import {Store} from 'react-chrome-redux';
 import $ from 'jquery'
 
 import App from './components/app/App';
+import Timer from './components/timer/App';
 import App2 from './components/getlist/App';
 
 const proxyStore = new Store({portName: 'oneformall'});
 const anchor = document.createElement('div');
-anchor.id = 'rcr-anchor';
+anchor.id = 'ofa-form-timer-div';
 
 document.body.insertBefore(anchor, document.body.childNodes[0]);
 
-//render(<App/>, document.getElementById('rcr-anchor'));
+
+
 
 /*///////////////////////////////////////////////////
 グローバル変数あり：初期化
@@ -132,6 +134,10 @@ function runtagApp(mode) {
   </Provider>,document.getElementById('getlist'));
   setDlagTagAreaApp();
   tagappinit=true;
+
+  render(<Provider store={proxyStore}>
+    <Timer />
+  </Provider>,document.getElementById(anchor.id));
 
     $('div').each(function() {
     var w = $(this).css('overflow');

@@ -7,6 +7,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      timer: this.props.timers,
       formnames: this.props.formnames,
       formgroupsUniqe: this.initconverttags(this.props.formnames),
       storeforms: this.props.storeforms,
@@ -22,10 +23,10 @@ class App extends Component {
 
     //console.log("タグ挿入アプリcomponentWillReceiveProps開始");
     //console.log(this.props);
-    //console.log(nextProps);
 
     this.setState({"formnames":nextProps.formnames});
     this.setState({"formgroupsUniqe":this.initconverttags(nextProps.formnames)});
+
   }
   render() {
 
@@ -81,6 +82,7 @@ class App extends Component {
 const mapStateToProps = (state) => {
   return {
     //count: state.count
+    timers: state.timer,
     count: state.counter,
     formnames: state.formnames,
     storeforms: state.storeforms

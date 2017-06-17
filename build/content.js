@@ -75,15 +75,17 @@
 
 	var _App4 = _interopRequireDefault(_App3);
 
+	var _App5 = __webpack_require__(254);
+
+	var _App6 = _interopRequireDefault(_App5);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var proxyStore = new _reactChromeRedux.Store({ portName: 'oneformall' });
 	var anchor = document.createElement('div');
-	anchor.id = 'rcr-anchor';
+	anchor.id = 'ofa-form-timer-div';
 
 	document.body.insertBefore(anchor, document.body.childNodes[0]);
-
-	//render(<App/>, document.getElementById('rcr-anchor'));
 
 	/*///////////////////////////////////////////////////
 	グローバル変数あり：初期化
@@ -192,10 +194,16 @@
 	    (0, _reactDom.render)(_react2.default.createElement(
 	      _reactRedux.Provider,
 	      { store: proxyStore },
-	      _react2.default.createElement(_App4.default, null)
+	      _react2.default.createElement(_App6.default, null)
 	    ), document.getElementById('getlist'));
 	    setDlagTagAreaApp();
 	    tagappinit = true;
+
+	    (0, _reactDom.render)(_react2.default.createElement(
+	      _reactRedux.Provider,
+	      { store: proxyStore },
+	      _react2.default.createElement(_App4.default, null)
+	    ), document.getElementById(anchor.id));
 
 	    (0, _jquery2.default)('div').each(function () {
 	      var w = (0, _jquery2.default)(this).css('overflow');
@@ -34540,6 +34548,7 @@
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
 	    _this.state = {
+	      timer: _this.props.timers,
 	      formnames: _this.props.formnames,
 	      formgroupsUniqe: _this.initconverttags(_this.props.formnames),
 	      storeforms: _this.props.storeforms,
@@ -34558,7 +34567,6 @@
 
 	      //console.log("タグ挿入アプリcomponentWillReceiveProps開始");
 	      //console.log(this.props);
-	      //console.log(nextProps);
 
 	      this.setState({ "formnames": nextProps.formnames });
 	      this.setState({ "formgroupsUniqe": this.initconverttags(nextProps.formnames) });
@@ -34626,6 +34634,7 @@
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
 	    //count: state.count
+	    timers: state.timer,
 	    count: state.counter,
 	    formnames: state.formnames,
 	    storeforms: state.storeforms
@@ -34825,7 +34834,8 @@
 
 	          if (this.props.inputname == nextProps.formnames[key]["inputName"]) {
 	            setform = true;
-	            selectdata[nextProps.formnames[key]["tagOrder"]] = this.props.storeforms[nextProps.formnames[key]["tag"]];
+	            //ローカルデータ読み込み
+	            selectdata[nextProps.formnames[key]["tagOrder"]] = this.props.storeforms[nextProps.formnames[key]["tag"]].name;
 	            activesdata[nextProps.formnames[key]["tagOrder"]] = nextProps.formnames[key]["tag"];
 	          }
 	        }
@@ -35096,17 +35106,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactRedux = __webpack_require__(160);
+
 	var _list = __webpack_require__(251);
 
 	var _list2 = _interopRequireDefault(_list);
-
-	var _form = __webpack_require__(254);
-
-	var _form2 = _interopRequireDefault(_form);
-
-	var _jquery = __webpack_require__(245);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35116,221 +35120,180 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var url = "";
+	var timer = function (_Component) {
+	  _inherits(timer, _Component);
 
-	var App = function (_Component) {
-	  _inherits(App, _Component);
+	  function timer(props) {
+	    _classCallCheck(this, timer);
 
-	  function App(props) {
-	    _classCallCheck(this, App);
-
-	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (timer.__proto__ || Object.getPrototypeOf(timer)).call(this, props));
 
 	    _this.state = {
-	      //data: ["id":"","url":"","tags":"","createdate":"","updatedate":"","autor_id":"","rating":""]
-	      data: [],
-	      formnames: _this.initformname(),
-	      url: url,
-	      toggle: ""
+	      storeforms: _this.props.storeforms,
+	      formnames: _this.props.formnames,
+	      timer: _this.props.timers,
+	      toggle: "play"
 	    };
+
 	    return _this;
 	  }
 
-	  _createClass(App, [{
-	    key: 'loadFormsFromServer',
-	    value: function loadFormsFromServer() {
-	      var _this2 = this;
+	  _createClass(timer, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.props.dispatch({
+	        type: 'CHANGE_MODE',
+	        payload: "confirmtime"
+	      });
 
-	      var apiurl = "https://yattaru.net/wp-json/wp/v2/oneformall/view";
-	      //URLを取得できたら開始
-	      if (url != "") {
-	        var formdata = { "url": url };
-	        _jquery2.default.ajax({
-	          url: apiurl,
-	          dataType: 'json',
-	          cache: false,
-	          data: formdata,
-	          success: function success(data) {
-	            var data = JSON.parse(data);
-	            url = ""; //実行後URLを空にする
-	            if (data) {
-	              _this2.setState({ toggle: "open" });
-	              //this.setState({data: JSON.parse(data)});
-	              _this2.initconverttags(data);
-	              console.log(data);
-	            } else {
+	      //this.interval = setInterval(this.gettimenow,1000,this.props); // タイマーをセット(1000ms間隔)
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      //clearInterval(this.interval);
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      clearInterval(this.interval);
+	      if (this.state.toggle == "play") {
 
-	              _this2.setState({ toggle: "close" });
-	              console.log(data);
-	            }
-
-	            //console.log(data);
-	            //"[{"id":"12","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"tel2\",\"inputName\":\"EU_TEL2\",\"tagOrder\":\"1\"},{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"last-name-katakana\",\"inputName\":\"EU_KFNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name-katakana\",\"inputName\":\"EU_KLNAME\",\"tagOrder\":\"1\"},{\"tag\":\"email\",\"inputName\":\"EU_EMAIL\",\"tagOrder\":\"1\"},{\"tag\":\"tel1\",\"inputName\":\"EU_TEL1\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"},{\"tag\":\"tel3\",\"inputName\":\"EU_TEL3\",\"tagOrder\":\"1\"},{\"tag\":\"zip1\",\"inputName\":\"EU_ZIP1\",\"tagOrder\":\"1\"},{\"tag\":\"zip2\",\"inputName\":\"EU_ZIP2\",\"tagOrder\":\"1\"},{\"tag\":\"city\",\"inputName\":\"EU_ADD1\",\"tagOrder\":\"1\"},{\"tag\":\"addr\",\"inputName\":\"EU_ADD2\",\"tagOrder\":\"1\"},{\"tag\":\"build\",\"inputName\":\"EU_ADD3\",\"tagOrder\":\"1\"}]","autor_id":"20","rating":null,"createdate":"2017-04-12 13:14:14","updatedate":"2017-04-12 13:55:21"},{"id":"6","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"}]","autor_id":"10","rating":null,"createdate":"2017-04-11 19:30:11","updatedate":"2017-04-11 22:35:58"}]"
-	          },
-	          error: function error(xhr, status, err) {
-	            console.error(_this2.props.url, status, err.toString());
-	          }
-	        });
+	        //console.log("タグ挿入アプリcomponentWillReceiveProps開始");
+	        //console.log(this.props);
+	        //console.log(nextProps);
+	        this.interval = setInterval(this.gettimenow, 1000, nextProps);
 	      }
 	    }
 	  }, {
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      if (!url) {
-
-	        chrome.runtime.sendMessage({
-	          type: "url",
-	          text: "Taka"
-	        }, function (response) {
-	          console.log(response);
-	          url = response.url;
-	          //tabid=response.id;
+	    key: 'togglebtn',
+	    value: function togglebtn() {
+	      console.log(this.state.toggle);
+	      if (this.state.toggle == "stop") {
+	        this.setState({ toggle: "play" });
+	        var mode = this.getmodename(this.props.timers);
+	        console.log(mode);
+	        this.props.dispatch({
+	          type: 'REPLAY_TIMES',
+	          payload: mode
 	        });
+	        this.interval = setInterval(this.gettimenow, 1000, this.props);
+	      } else {
+	        this.setState({ toggle: "stop" });
 	      }
 
-	      //URLを取得できるまで繰り返し実行。実行後URLを殻にする
-	      setInterval(this.loadFormsFromServer.bind(this), 2000);
+	      return;
+	    }
+	  }, {
+	    key: 'resultbtn',
+	    value: function resultbtn() {
+
+	      this.setState({ toggle: "stop" });
+	      return;
+	    }
+	  }, {
+	    key: 'gettimenow',
+	    value: function gettimenow(props) {
+	      var mode = "";
+	      for (var key in props.timers) {
+	        if (props.timers[key].select) {
+	          mode = key;
+	        }
+	      }
+	      //console.log("ADD_GET_TIMESmode");
+	      //console.log(mode);
+	      var peyloads = { "storeforms": props.storeforms, "formnames": props.formnames, "mode": mode };
+	      props.dispatch({
+	        type: 'ADD_GET_TIMES',
+	        payload: peyloads
+	      });
+	    }
+	  }, {
+	    key: 'getmodename',
+	    value: function getmodename(propstimers) {
+	      var mode = "";
+	      for (var key in propstimers) {
+
+	        if (propstimers[key].select) {
+
+	          mode = key;
+	        }
+	      }
+	      return mode;
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var ListNodes;
-	      if (this.state.toggle == "open") {
-	        ListNodes = _react2.default.createElement(_list2.default, { data: this.state.data });
-	      } else if (this.state.toggle == "close") {
-	        ListNodes = _react2.default.createElement(
-	          'div',
-	          null,
-	          '\u304A\u3081\u3067\u3068\u3046\u3002\u3042\u306A\u305F\u304C\u521D\u3081\u3066\u306E\u767B\u9332\u8005\u3067\u3059\u3002\u65B0\u898F\u8FFD\u52A0\u3067\u304D\u307E\u3059\u3002'
-	        );
-	      } else {
-	        ListNodes = _react2.default.createElement(
-	          'div',
-	          null,
-	          '\u8AAD\u307F\u8FBC\u307F\u4E2D...'
-	        );
+	      var timemode = [];
+	      for (var key in this.props.timers) {
+
+	        if (this.props.timers[key].select) {
+	          if (this.state.toggle == "stop") {
+	            timemode.push(_react2.default.createElement(
+	              'div',
+	              null,
+	              this.props.timers[key].tagModeName,
+	              ':',
+	              this.props.timers[key].time,
+	              _react2.default.createElement(
+	                'button',
+	                { type: 'button', onClick: this.togglebtn.bind(this), className: 'btn btn-success' },
+	                '\u25B6\u958B\u59CB'
+	              )
+	            ));
+	          } else {
+	            timemode.push(_react2.default.createElement(
+	              'div',
+	              null,
+	              this.props.timers[key].tagModeName,
+	              ':',
+	              this.props.timers[key].time,
+	              _react2.default.createElement(
+	                'button',
+	                { type: 'button', onClick: this.togglebtn.bind(this), className: 'btn btn-danger' },
+	                '\u275A\u275A\u4E00\u6642\u505C\u6B62'
+	              )
+	            ));
+	          }
+	        }
 	      }
+	      var ListNodes;
+	      ListNodes = _react2.default.createElement(_list2.default, { dispatch: this.props.dispatch, timer: this.props.timers });
+	      //console.log("タグ挿入アプリrender開始");
+
+	      //Count: {this.props.count}
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'commentBox' },
+	        { className: 'card' },
+	        timemode,
+	        ListNodes,
 	        _react2.default.createElement(
-	          'div',
-	          { className: 'card' },
+	          'button',
+	          { type: 'button', onClick: this.resultbtn.bind(this), className: 'btn btn-info timer-result-btn' },
+	          '\u9078\u629E\u5B8C\u4E86',
 	          _react2.default.createElement(
-	            'div',
-	            { className: 'card-header' },
-	            _react2.default.createElement(
-	              'h2',
-	              null,
-	              '\u767B\u9332\u30D5\u30A9\u30FC\u30E0\u4E00\u89A7'
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'card-block' },
-	            ListNodes,
-	            _react2.default.createElement(_form2.default, null)
+	            'span',
+	            null,
+	            '\u5B9A\u7FA9\u60C5\u5831\u3068\u6642\u9593\u60C5\u5831\u3092\u9001\u4FE1\u3002\u30A2\u30D7\u30EA\u3092\u7D42\u4E86'
 	          )
 	        )
 	      );
 	    }
-	    //使用するタグのみの配列
-
-	  }, {
-	    key: 'initconverttags',
-	    value: function initconverttags(datas) {
-
-	      for (var key in datas) {
-	        var data = datas[key];
-	        var tags = JSON.parse(data["tags"]);
-	        //console.log(tags);
-	        var officecnt = 0;
-	        var pesonalcnt = 0;
-	        var selectform = [];
-	        for (var key2 in tags) {
-	          var tag = tags[key2];
-	          var fn = this.state.formnames[tag["tag"]];
-	          if (!tag["tag"].indexOf('office')) {
-	            officecnt++;
-	          } else {
-	            pesonalcnt++;
-	          }
-	          selectform.push({ "tagGroupName": fn["tagGroupName"], "tagGroup": fn["tagGroup"], "tagName": fn["tagName"], "tag": tag["tag"], "inputName": tag["inputName"], "tagOrder": tag["tagOrder"] });
-	        }
-	        datas[key]["tags"] = selectform;
-	        datas[key]["officecnt"] = officecnt;
-	        datas[key]["pesonalcnt"] = pesonalcnt;
-	      }
-
-	      this.setState({ data: datas });
-	      console.log(datas);
-	      return datas;
-	    }
-
-	    //タグ生成フェーズ：タグ情報・登録済みフォーム情報（input[name]）※無ければ空を取得
-
-	  }, {
-	    key: 'initformname',
-	    value: function initformname() {
-	      var formnames = { "last-name": { "tagName": "姓", "tag": "last-name", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "first-name": { "tagName": "名", "tag": "first-name", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "last-name-katakana": { "tagName": "セイ", "tag": "last-name-katakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "first-name-katakana": { "tagName": "メイ", "tag": "first-name-katakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "last-name-hirakana": { "tagName": "せい", "tag": "last-name-hirakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "first-name-hirakana": { "tagName": "めい", "tag": "first-name-hirakana", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "last-name-roma": { "tagName": "性:ローマ", "tag": "last-name-roma", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "first-name-roma": { "tagName": "名:ローマ", "tag": "first-name-roma", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "name-space": { "tagName": "空白挿入", "tag": "name-space", "tagGroup": "name", "tagGroupName": "氏名", "inputName": "", "tagOrder": "" },
-	        "email": { "tagName": "Email", "tag": "email", "tagGroup": "contact-email", "tagGroupName": "メール", "inputName": "", "tagOrder": "" },
-	        "re-email": { "tagName": "Email(再)", "tag": "re-email", "tagGroup": "contact-email", "tagGroupName": "メール", "inputName": "", "tagOrder": "" },
-	        "tel1": { "tagName": "TEL:1", "tag": "tel1", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	        "tel2": { "tagName": "TEL:2", "tag": "tel2", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	        "tel3": { "tagName": "TEL:3", "tag": "tel3", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	        "contact-tel-byte2": { "tagName": "半角→全角", "tag": "contact-tel-byte2", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	        "contact-tel-hyphen": { "tagName": "-　挿入", "tag": "contact-tel-hyphen", "tagGroup": "contact-tel", "tagGroupName": "電話", "inputName": "", "tagOrder": "" },
-	        "zip1": { "tagName": "〒前", "tag": "zip1", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
-	        "zip2": { "tagName": "〒後", "tag": "zip2", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
-	        "contact-zip-byte2": { "tagName": "半角→全角", "tag": "contact-zip-byte2", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
-	        "contact-zip-hyphen": { "tagName": "-　挿入", "tag": "contact-zip-hyphen", "tagGroup": "contact-zip", "tagGroupName": "郵便番号", "inputName": "", "tagOrder": "" },
-	        "pref": { "tagName": "都道府県", "tag": "pref", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	        "city": { "tagName": "市区町村", "tag": "city", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	        "addr": { "tagName": "詳細", "tag": "addr", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	        "build": { "tagName": "ビル名", "tag": "build", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	        "contact-byte2": { "tagName": "半角→全角", "tag": "contact-byte2", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	        "contact-space": { "tagName": "空白挿入", "tag": "contact-space", "tagGroup": "contact", "tagGroupName": "住所", "inputName": "", "tagOrder": "" },
-	        "office-name": { "tagName": "社名", "tag": "office-name", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	        "office-div": { "tagName": "部署名", "tag": "office-div", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	        "office-position": { "tagName": "役職名", "tag": "office-position", "tagGroup": "office", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	        "office-email": { "tagName": "Email", "tag": "office-email", "tagGroup": "office-email", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	        "re-office-email": { "tagName": "Email(再)", "tag": "re-office-email", "tagGroup": "office-email", "tagGroupName": "会社", "inputName": "", "tagOrder": "" },
-	        "office-tel1": { "tagName": "TEL:1", "tag": "office-tel1", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	        "office-tel2": { "tagName": "TEL:2", "tag": "office-tel2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	        "office-tel3": { "tagName": "TEL:3", "tag": "office-tel3", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	        "office-fax1": { "tagName": "FAX:1", "tag": "office-fax1", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	        "office-fax2": { "tagName": "FAX:2", "tag": "office-fax2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	        "office-fax3": { "tagName": "FAX:3", "tag": "office-fax3", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	        "office-tel-byte2": { "tagName": "半角→全角", "tag": "office-tel-byte2", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	        "office-tel-hyphen": { "tagName": "-　挿入", "tag": "office-tel-hyphen", "tagGroup": "office-tel", "tagGroupName": "会社電話", "inputName": "", "tagOrder": "" },
-	        "office-zip1": { "tagName": "〒前", "tag": "office-zip1", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
-	        "office-zip2": { "tagName": "〒後", "tag": "office-zip2", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
-	        "office-zip-byte2": { "tagName": "半角→全角", "tag": "office-zip-byte2", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
-	        "office-zip-hyphen": { "tagName": "-　挿入", "tag": "office-zip-hyphen", "tagGroup": "office-zip", "tagGroupName": "会社郵便", "inputName": "", "tagOrder": "" },
-	        "office-pref": { "tagName": "都道府県", "tag": "office-pref", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	        "office-city": { "tagName": "市区町村", "tag": "office-city", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	        "office-addr": { "tagName": "詳細", "tag": "office-addr", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	        "office-build": { "tagName": "ビル名", "tag": "office-build", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	        "office-contact-byte2": { "tagName": "半角→全角", "tag": "office-contact-byte2", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" },
-	        "office-contact-space": { "tagName": "空白挿入", "tag": "office-contact-space", "tagGroup": "office-contact", "tagGroupName": "会社住所", "inputName": "", "tagOrder": "" }
-
-	      };
-	      return formnames;
-	    }
 	  }]);
 
-	  return App;
+	  return timer;
 	}(_react.Component);
 
-	exports.default = App;
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    //count: state.count
+	    timers: state.timer,
+	    formnames: state.formnames,
+	    storeforms: state.storeforms
+	  };
+	};
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(timer);
 
 /***/ }),
 /* 251 */
@@ -35363,22 +35326,35 @@
 	var List = function (_Component) {
 	  _inherits(List, _Component);
 
-	  function List() {
+	  function List(props) {
 	    _classCallCheck(this, List);
 
-	    return _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).call(this, props));
+
+	    _this.state = {
+	      toggle: "personal"
+	    };
+	    return _this;
 	  }
 
 	  _createClass(List, [{
 	    key: 'render',
 	    value: function render() {
-	      var commentNodes = this.props.data.map(function (comment) {
-	        return _react2.default.createElement(_viewitem2.default, { autor_id: comment.autor_id, id: comment.id, tags: comment.tags, pesonalcnt: comment.pesonalcnt, officecnt: comment.officecnt, key: comment.id });
-	      });
+	      var timeviews = [];
+	      for (var key in this.props.timer) {
+	        timeviews.push(_react2.default.createElement(
+	          'div',
+	          null,
+	          this.props.timer[key]["tagName"],
+	          ':',
+	          this.props.timer[key]["time"]
+	        ));
+	      }
+	      //timeviews.push(<div><Viewitem dispatch={this.props.dispatch} /></div>);
 	      return _react2.default.createElement(
-	        'ul',
-	        { className: 'list-group' },
-	        commentNodes
+	        'div',
+	        null,
+	        timeviews
 	      );
 	    }
 	  }]);
@@ -35425,13 +35401,493 @@
 	    var _this = _possibleConstructorReturn(this, (Viewitem.__proto__ || Object.getPrototypeOf(Viewitem)).call(this, props));
 
 	    _this.state = {
-	      toggle: "close"
+	      actives: []
 	    };
 
 	    return _this;
 	  }
 
 	  _createClass(Viewitem, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {}
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      //console.log(this.props.tags);
+
+	      var Viewitems = [];
+	      Viewitems.push(_react2.default.createElement(
+	        'h3',
+	        { className: 'tagGroupName' },
+	        'test'
+	      ));
+
+	      return _react2.default.createElement(
+	        'div',
+	        { 'data-toggle': 'buttons' },
+	        Viewitems
+	      );
+	    }
+	  }]);
+
+	  return Viewitem;
+	}(_react.Component);
+
+	exports.default = Viewitem;
+
+/***/ }),
+/* 253 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var viewitemdetail = function (_Component) {
+	  _inherits(viewitemdetail, _Component);
+
+	  function viewitemdetail() {
+	    _classCallCheck(this, viewitemdetail);
+
+	    return _possibleConstructorReturn(this, (viewitemdetail.__proto__ || Object.getPrototypeOf(viewitemdetail)).apply(this, arguments));
+	  }
+
+	  _createClass(viewitemdetail, [{
+	    key: "render",
+	    value: function render() {
+	      var tagitemNodes = [];
+	      var data = this.props.formgroupsUniqe;
+	      for (var i in data) {
+	        tagitemNodes.push(_react2.default.createElement(
+	          "li",
+	          { classname: "nav-item" },
+	          _react2.default.createElement(
+	            "a",
+	            { className: "nav-link active", "data-toggle": "tab", href: "#{data[i].tagGroup}", role: "tab" },
+	            data[i]
+	          )
+	        ));
+	      }
+
+	      console.log(this.props.tags);
+
+	      return _react2.default.createElement(
+	        "ul",
+	        { classname: "nav nav-tabs", role: "tablist" },
+	        tagitemNodes
+	      );
+	    }
+	  }]);
+
+	  return viewitemdetail;
+	}(_react.Component);
+
+	exports.default = viewitemdetail;
+
+/***/ }),
+/* 254 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _list = __webpack_require__(255);
+
+	var _list2 = _interopRequireDefault(_list);
+
+	var _form = __webpack_require__(258);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _jquery = __webpack_require__(245);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	var _reactRedux = __webpack_require__(160);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var url = "";
+
+	var App = function (_Component) {
+	  _inherits(App, _Component);
+
+	  function App(props) {
+	    _classCallCheck(this, App);
+
+	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+	    _this.state = {
+	      //data: ["id":"","url":"","tags":"","createdate":"","updatedate":"","autor_id":"","rating":""]
+	      data: [],
+	      formnames: _this.props.formnames,
+	      getformdata: _this.props.getformdata,
+	      url: url,
+	      toggle: ""
+	    };
+	    return _this;
+	  }
+	  //初期化開始
+
+
+	  _createClass(App, [{
+	    key: 'initdatas',
+	    value: function initdatas(data) {
+	      console.log("data:true");
+	      console.log(data);
+	      this.setState({ toggle: "open" });
+	      //this.setState({data: JSON.parse(data)});
+	      this.initconverttags(data);
+	    }
+	  }, {
+	    key: 'loadFormsFromServer',
+	    value: function loadFormsFromServer() {
+	      var _this2 = this;
+
+	      var apiurl = "https://yattaru.net/wp-json/wp/v2/oneformall/view";
+	      //URLを取得できたら開始
+	      console.log("this.props.getformdata.url.url");
+	      console.log(this.props.getformdata.url.url);
+	      if (this.props.getformdata.url.url == "") {
+	        var formdata = { "url": url };
+	        _jquery2.default.ajax({
+	          url: apiurl,
+	          dataType: 'json',
+	          cache: false,
+	          data: formdata,
+	          success: function success(data) {
+	            var data = JSON.parse(data);
+	            console.log("JSON.parse(data)");
+	            console.log(data);
+
+	            if (data) {
+	              var response = { "url": { "url": url }, "datas": data };
+	              _this2.props.dispatch({
+	                type: 'SET_URL',
+	                payload: response
+	              });
+	              //初期化開始
+	              _this2.initdatas(data);
+	            } else {
+	              console.log("data:false");
+	              _this2.setState({ toggle: "close" });
+	              console.log(data);
+	            }
+	            clearInterval(_this2.interval);
+	            //console.log(data);
+	            //"[{"id":"12","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"tel2\",\"inputName\":\"EU_TEL2\",\"tagOrder\":\"1\"},{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"last-name-katakana\",\"inputName\":\"EU_KFNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name-katakana\",\"inputName\":\"EU_KLNAME\",\"tagOrder\":\"1\"},{\"tag\":\"email\",\"inputName\":\"EU_EMAIL\",\"tagOrder\":\"1\"},{\"tag\":\"tel1\",\"inputName\":\"EU_TEL1\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"},{\"tag\":\"tel3\",\"inputName\":\"EU_TEL3\",\"tagOrder\":\"1\"},{\"tag\":\"zip1\",\"inputName\":\"EU_ZIP1\",\"tagOrder\":\"1\"},{\"tag\":\"zip2\",\"inputName\":\"EU_ZIP2\",\"tagOrder\":\"1\"},{\"tag\":\"city\",\"inputName\":\"EU_ADD1\",\"tagOrder\":\"1\"},{\"tag\":\"addr\",\"inputName\":\"EU_ADD2\",\"tagOrder\":\"1\"},{\"tag\":\"build\",\"inputName\":\"EU_ADD3\",\"tagOrder\":\"1\"}]","autor_id":"20","rating":null,"createdate":"2017-04-12 13:14:14","updatedate":"2017-04-12 13:55:21"},{"id":"6","url":"https:\/\/ssl.kao.com\/jp\/kanebo-soudan\/","tags":"[{\"tag\":\"last-name\",\"inputName\":\"EU_FNAME\",\"tagOrder\":\"1\"},{\"tag\":\"first-name\",\"inputName\":\"EU_LNAME\",\"tagOrder\":\"1\"}]","autor_id":"10","rating":null,"createdate":"2017-04-11 19:30:11","updatedate":"2017-04-11 22:35:58"}]"
+	          },
+	          error: function error(xhr, status, err) {
+
+	            _this2.setState({ toggle: "err" });
+	            console.error(url, status, err.toString());
+	            url = ""; //実行後URLを空にする
+	          }
+	        });
+	      } else {
+	        clearInterval(this.interval);
+	        console.log("読み込み済み");
+	        //初期化開始
+	        this.initdatas(this.props.getformdata.datas);
+	      }
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+
+	      if (!url) {
+
+	        chrome.runtime.sendMessage({
+	          type: "url",
+	          text: "Taka"
+	        }, function (response) {
+	          console.log("response");
+	          console.log(response);
+	          url = response.url;
+	          //tabid=response.id;
+	        });
+	      }
+
+	      //URLを取得できるまで繰り返し実行。実行後URLを殻にする
+	      this.interval = setInterval(this.loadFormsFromServer.bind(this), 2000);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+
+	      var ListNodes;
+	      if (this.state.toggle == "open") {
+	        ListNodes = _react2.default.createElement(_list2.default, { data: this.state.data, formnames: this.props.formnames, dispatch: this.props.dispatch });
+	      } else if (this.state.toggle == "close") {
+	        ListNodes = _react2.default.createElement(
+	          'div',
+	          null,
+	          '\u304A\u3081\u3067\u3068\u3046\u3002\u3042\u306A\u305F\u304C\u521D\u3081\u3066\u306E\u767B\u9332\u8005\u3067\u3059\u3002\u65B0\u898F\u8FFD\u52A0\u3067\u304D\u307E\u3059\u3002'
+	        );
+	      } else if (this.state.toggle == "err") {
+	        ListNodes = _react2.default.createElement(
+	          'div',
+	          null,
+	          '\u8AAD\u307F\u8FBC\u307F\u30A8\u30E9\u30FC\u3002\u66F4\u65B0\u3059\u308B\u304B\u65B0\u898F\u8FFD\u52A0\u3092\u304A\u9858\u3044\u3057\u307E\u3059\u3002'
+	        );
+	      } else {
+	        ListNodes = _react2.default.createElement(
+	          'div',
+	          null,
+	          '\u8AAD\u307F\u8FBC\u307F\u4E2D...'
+	        );
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'commentBox' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'card' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'card-header' },
+	            _react2.default.createElement(
+	              'h2',
+	              null,
+	              '\u767B\u9332\u30D5\u30A9\u30FC\u30E0\u4E00\u89A7'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'card-block' },
+	            ListNodes,
+	            _react2.default.createElement(_form2.default, { dispatch: this.props.dispatch })
+	          )
+	        )
+	      );
+	    }
+	    //使用するタグのみの配列
+
+	  }, {
+	    key: 'initconverttags',
+	    value: function initconverttags(datas) {
+	      console.log("initconverttags");
+	      console.log(datas);
+
+	      for (var key in datas) {
+	        var data = datas[key];
+	        var tags = JSON.parse(data["tags"]);
+	        //console.log(tags);
+	        var officecnt = 0;
+	        var pesonalcnt = 0;
+	        var selectform = [];
+	        for (var key2 in tags) {
+	          var tag = tags[key2];
+
+	          var fn = this.props.formnames[tag["tag"]];
+	          if (!tag["tag"].indexOf('office')) {
+	            officecnt++;
+	          } else {
+	            pesonalcnt++;
+	          }
+	          selectform.push({ "tagGroupName": fn["tagGroupName"], "tagGroup": fn["tagGroup"], "tagName": fn["tagName"], "tag": tag["tag"], "inputName": tag["inputName"], "tagOrder": tag["tagOrder"] });
+	        }
+	        datas[key]["tags"] = selectform;
+	        datas[key]["officecnt"] = officecnt;
+	        datas[key]["pesonalcnt"] = pesonalcnt;
+	      }
+
+	      this.setState({ data: datas });
+	      console.log(datas);
+	      return datas;
+	    }
+	  }]);
+
+	  return App;
+	}(_react.Component);
+
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    //count: state.count
+	    count: state.counter,
+	    formnames: state.formnames,
+	    getformdata: state.getformdata
+	  };
+	};
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(App);
+
+/***/ }),
+/* 255 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _viewitem = __webpack_require__(256);
+
+	var _viewitem2 = _interopRequireDefault(_viewitem);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var List = function (_Component) {
+	  _inherits(List, _Component);
+
+	  function List() {
+	    _classCallCheck(this, List);
+
+	    return _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).apply(this, arguments));
+	  }
+
+	  _createClass(List, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var i = 0;
+	      var commentNodes = this.props.data.map(function (comment, i) {
+	        return _react2.default.createElement(_viewitem2.default, { dispatch: _this2.props.dispatch, formnames: _this2.props.formnames, data: _this2.props.data, autor_id: comment.autor_id, id: i, tags: comment.tags, pesonalcnt: comment.pesonalcnt, officecnt: comment.officecnt, key: i });
+	        i++;
+	      });
+	      return _react2.default.createElement(
+	        'ul',
+	        { className: 'list-group' },
+	        commentNodes
+	      );
+	    }
+	  }]);
+
+	  return List;
+	}(_react.Component);
+
+	exports.default = List;
+
+/***/ }),
+/* 256 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _viewitemdetail = __webpack_require__(257);
+
+	var _viewitemdetail2 = _interopRequireDefault(_viewitemdetail);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Viewitem = function (_Component) {
+	  _inherits(Viewitem, _Component);
+
+	  function Viewitem(props) {
+	    _classCallCheck(this, Viewitem);
+
+	    var _this = _possibleConstructorReturn(this, (Viewitem.__proto__ || Object.getPrototypeOf(Viewitem)).call(this, props));
+
+	    _this.state = {
+	      toggle: "close"
+	    };
+	    console.log("PROPS初期viewitemdetailthis.props.formnames");
+	    console.log(_this.props.formnames);
+	    console.log("this.props.data");
+	    console.log(_this.props.data);
+
+	    return _this;
+	  }
+
+	  _createClass(Viewitem, [{
+	    key: 'setformdata',
+	    value: function setformdata() {
+	      chrome.runtime.sendMessage({
+	        type: "addform",
+	        text: ""
+	      }, function (response) {
+	        console.log(response);
+	        //tabid=response.id;
+	      });
+	      console.log("selectdata");
+	      var selecttags = this.props.data[this.props.id]["tags"];
+	      console.log(selecttags);
+	      //
+	      var newformnames = this.props.formnames;
+
+	      for (var key in this.props.formnames) {
+	        newformnames[key]["inputName"] = "";
+	        newformnames[key]["tagOrder"] = "";
+	      }
+	      for (var key in selecttags) {
+	        newformnames[selecttags[key]["tag"]]["inputName"] = selecttags[key]["inputName"];
+	        newformnames[selecttags[key]["tag"]]["tagOrder"] = selecttags[key]["tagOrder"];
+	      }
+	      console.log("PROPS初期化newformnames");
+	      console.log(newformnames);
+	      console.log("RESETformnames");
+	      this.props.dispatch({
+	        type: 'RESET_ADD_FOMENAMES',
+	        payload: newformnames
+	      });
+
+	      console.log(this.props.formnames);
+	    }
+	  }, {
 	    key: 'changetoggle',
 	    value: function changetoggle() {
 	      if (this.state.toggle == "close") {
@@ -35479,7 +35935,7 @@
 	        ViewitemdetailNodes,
 	        _react2.default.createElement(
 	          'button',
-	          { type: 'button', className: 'btn btn-primary btn-block' },
+	          { type: 'button', onClick: this.setformdata.bind(this), className: 'btn btn-primary btn-block' },
 	          '\u4F7F\u7528\u3059\u308B'
 	        )
 	      );
@@ -35492,7 +35948,7 @@
 	exports.default = Viewitem;
 
 /***/ }),
-/* 253 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35553,10 +36009,10 @@
 	exports.default = viewitemdetail;
 
 /***/ }),
-/* 254 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -35586,8 +36042,12 @@
 	  }
 
 	  _createClass(Form, [{
-	    key: "addform",
+	    key: 'addform',
 	    value: function addform() {
+	      this.props.dispatch({
+	        type: 'CHANGE_MODE',
+	        payload: "selecttime"
+	      });
 	      chrome.runtime.sendMessage({
 	        type: "addform",
 	        text: ""
@@ -35595,18 +36055,21 @@
 	        console.log(response);
 	        //tabid=response.id;
 	      });
+	      this.props.dispatch({
+	        type: 'RESET_FOMENAMES'
+	      });
 	      return;
 	    }
 	  }, {
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
-	        "div",
-	        { className: "card-footer text-muted" },
+	        'div',
+	        { className: 'card-footer text-muted' },
 	        _react2.default.createElement(
-	          "button",
-	          { type: "button", onClick: this.addform.bind(this), className: "btn btn-info" },
-	          "\u65B0\u898F\u8FFD\u52A0"
+	          'button',
+	          { type: 'button', onClick: this.addform.bind(this), className: 'btn btn-info' },
+	          '\u65B0\u898F\u8FFD\u52A0'
 	        )
 	      );
 	    }

@@ -1,7 +1,14 @@
 {
   "manifest_version": 2,
-  "name": "RCR",
-  "description": "React, Chrome, and Redux example",
+  "name": "OneFormALL",
+  "description": "フォーム定義共有ツール。
+フォーム定義を選択し、情報を共有。
+フォーム入力時間を大幅に短縮します。
+入力値（名前など）は共有されません。
+ローカルPC内に個人情報を保管。
+クラウドからはフォームの定義をダウンロードします。
+フォーム定義ファイルはAPI（作成予定）などを通じて公開いたします。
+",
   "version": "0.0.0.1",
   "background": {
     "scripts": [

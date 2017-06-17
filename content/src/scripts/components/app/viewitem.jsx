@@ -19,7 +19,8 @@ export default class Viewitem extends Component {
 
           if(this.props.inputname==nextProps.formnames[key]["inputName"]){
             setform=true;
-          selectdata[nextProps.formnames[key]["tagOrder"]]=this.props.storeforms[nextProps.formnames[key]["tag"]];
+            //ローカルデータ読み込み
+          selectdata[nextProps.formnames[key]["tagOrder"]]=this.props.storeforms[nextProps.formnames[key]["tag"]].name;
           activesdata[nextProps.formnames[key]["tagOrder"]]=nextProps.formnames[key]["tag"];
           }
         }

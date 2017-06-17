@@ -1,4 +1,8 @@
-
+#ofa-form-timer-div{
+  position: fixed;
+right: 0px;
+z-index: 10000;
+}
 .input-viewbtn{
 
   background-repeat: no-repeat;

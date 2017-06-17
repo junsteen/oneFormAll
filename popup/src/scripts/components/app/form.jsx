@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 
 export default class Form extends Component {
   addform() {
+    this.props.dispatch({
+      type: 'CHANGE_MODE',
+      payload: "selecttime"
+    });
     chrome.runtime.sendMessage({
       type: "addform",
       text: ""
